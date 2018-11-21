@@ -19,7 +19,8 @@ export default class Profile extends React.Component {
       weight: '',
       height: '',
       age: '',
-      effort: 1.2
+      effort: 1.2,
+      maintenance: 0
     }
   }
 
@@ -54,32 +55,49 @@ export default class Profile extends React.Component {
   }
 
   verify = () => {
-    let { male, female, weight, height, age, effort } = this.state;
+    let { male, female, weight, height, age } = this.state;
     if (!male && !female) {
       return false;
     }
     if (!Number(weight) ||
           !Number(height) ||
-          !Number(age) ||
-          !Number(effort)) {
+          !Number(age)) {
             return false;
           }
     return true;
   }
 
   calculate = () => {
-    let { male, female, weight, height, age, effort } = this.state,
-        rest = 0;
+    let { male, female, weight, height, age, effort, maintenance } = this.state,
+        rest = 0,
+        protein = 0,
+        carbs = 0,
+        fat = 0;
     if (this.verify()) {
+      weight = Number(weight);
+      height = Number(height);
+      age = Number(age);
       if (male) {
         rest = 5;
       }
       if (female) {
         rest = -161;
       }
-      let bmr = 10 * Number(weight) + 6.25 * Number(height) - 5 * Number(age) + rest;
-      let result = bmr * Number(effort);
-      console.log(result);
+      let bmr = 10 * weight + 6.25 * height - 5 * age + rest;
+      let calories = Math.round(bmr * effort + maintenance);
+      if (effort === 1.2) {
+        protein = Math.round(0.8 * weight);
+      } else {
+        protein = Math.round(1.6 * weight);
+      }
+      fat = Math.round(((calories - protein * 4) * 0.3) / 9);
+      carbs = Math.round((calories - protein * 4 - fat * 9) / 4);
+      this.props.navigation.navigate('UserResult', { 
+        calories,
+        protein,
+        carbs,
+        fat 
+      });
     }
   }
 
@@ -92,6 +110,7 @@ export default class Profile extends React.Component {
             <Text style={[styles.height, styles.alignText, styles.margins]}>Weight:</Text>
             <Text style={[styles.height, styles.alignText, styles.margins]}>Height:</Text>
             <Text style={[styles.height, styles.alignText, styles.margins]}>Age:</Text>
+            <Text style={[styles.height, styles.alignText, styles.margins]}>Looking to:</Text>
           </View>
           <View style={[{flex: 1}, styles.column]}>
             <View style={[styles.rowIcons, styles.margins]}>
@@ -131,12 +150,22 @@ export default class Profile extends React.Component {
               keyboardType={'numeric'}
               placeholder={'years'}
             />
+            <View style={styles.textInput}>
+              <Picker
+                selectedValue={this.state.maintenance}       
+                onValueChange={(itemValue, itemIndex) => this.setState({maintenance: itemValue})}
+              >
+                <Picker.Item label='Lose weight' value={-500}/>
+                <Picker.Item label='Maintain weight' value={0}/>
+                <Picker.Item label='Gain weight' value={500}/>
+            </Picker>
+          </View>
           </View>
         </View>
-        <View style={[styles.row, styles.margins]}>
+        <View style={[styles.row, styles.margins, styles.textInput]}>
           <Picker
             selectedValue={this.state.effort}
-            style={{ height: 40, width: '100%' }}
+            style={{ width: '100%' }}
             onValueChange={(itemValue, itemIndex) => this.setState({effort: itemValue})}
           >
             <Picker.Item label='Little to no exercise' value={1.2}/>
@@ -187,10 +216,7 @@ const styles = StyleSheet.create({
   },
   textInput: {
     borderColor: 'grey',
-    borderTopWidth: 0,
-    borderLeftWidth: 0,
-    borderRightWidth: 0,
-    borderBottomWidth: 5,
+    borderBottomWidth: 2,
     borderRadius: 10
   },
   height: {
@@ -201,6 +227,6 @@ const styles = StyleSheet.create({
     margin: 10
   },
   alignText: {
-    textAlignVertical: 'center'
+    textAlignVertical: 'bottom'
   }
 });
