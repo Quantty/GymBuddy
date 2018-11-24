@@ -1,13 +1,15 @@
 import React from 'react';
 import { View, 
           Image, 
-          StyleSheet, 
           TouchableOpacity, 
           Text, 
           TextInput, 
           Picker,
-          Button } from 'react-native';
+          Button,
+          ScrollView,
+          AsyncStorage } from 'react-native';
 import images from '../images';
+import styles from '../styles/styles'
 
 export default class Profile extends React.Component {
 
@@ -20,13 +22,43 @@ export default class Profile extends React.Component {
       height: '',
       age: '',
       effort: 1.2,
-      maintenance: 0
+      maintenance: 0,
+      calories: 0,
+      protein: 0,
+      carbs: 0,
+      fat: 0
+    }
+  }
+
+  componentDidMount() {
+    this.loadData();
+  }
+
+  loadData = async () => {
+    try {
+      const value = await AsyncStorage.getItem('profile');
+      if (value !== null) {
+        const data = JSON.parse(value);
+        this.setState({
+          ...data
+        });
+      }
+    } catch (error) {
+      //error of some sort
+    }
+  }
+
+  saveData = async () => {
+    const data = JSON.stringify(this.state);
+    try {
+      await AsyncStorage.setItem('profile', data);
+    } catch (error) {
+      //error of some sort
     }
   }
 
   handleMale = () => {
-    let male = this.state.male,
-        female = this.state.female;
+    let { male, female } = this.state;
     if (male) {
       male = false;
     } else {
@@ -40,8 +72,7 @@ export default class Profile extends React.Component {
   }
 
   handleFemale = () => {
-    let male = this.state.male,
-        female = this.state.female;
+    let { male, female } = this.state;
     if (female) {
       female = false;
     } else {
@@ -92,18 +123,48 @@ export default class Profile extends React.Component {
       }
       fat = Math.round(((calories - protein * 4) * 0.3) / 9);
       carbs = Math.round((calories - protein * 4 - fat * 9) / 4);
-      this.props.navigation.navigate('UserResult', { 
+      this.setState({
         calories,
         protein,
         carbs,
-        fat 
-      });
+        fat
+      })
     }
   }
 
   render() {
+    const { calories, protein, carbs, fat } = this.state;
+    textInput = (key, placeholder) => 
+      <TextInput
+        key={key}
+        style={[styles.textInput, styles.height, styles.margins]}
+        onChangeText={value => this.setState({
+          [key]: value
+        })}
+        value={this.state[key]}
+        keyboardType={'numeric'}
+        placeholder={placeholder}
+      />;
+    button = (onPress, title) =>
+      <View style={[styles.row, styles.margins]} key={'button'.concat(title)}>
+        <View style={{flex: 1}}>
+          <Button 
+            onPress={onPress}
+            title={title}
+          />
+        </View>
+      </View>
+    touchableImage = (onPress, source, key) =>
+      <TouchableOpacity
+        key={'touchableImage'.concat(key)}
+        onPress={onPress}
+      >
+        <Image 
+          source={source}
+        />
+      </TouchableOpacity>
     return (
-      <View style={[{flex: 1}, styles.columnCenter]}>
+      <ScrollView>
         <View style={[styles.container, styles.margins]}>
           <View style={styles.column}>
             <Text style={[styles.height, styles.alignText, styles.margins]}>Gender:</Text>
@@ -114,42 +175,20 @@ export default class Profile extends React.Component {
           </View>
           <View style={[{flex: 1}, styles.column]}>
             <View style={[styles.rowIcons, styles.margins]}>
-              <TouchableOpacity 
-                onPress={this.handleMale}
-              >
-                <Image 
-                  source={this.state.male ? images.male : images.maleGrey}
-                />
-              </TouchableOpacity>
-              <TouchableOpacity
-                onPress={this.handleFemale}
-              >
-                <Image 
-                  source={this.state.female ? images.female : images.femaleGrey}
-                />
-              </TouchableOpacity>
+              {
+                [
+                  touchableImage(this.handleMale, this.state.male ? images.male : images.maleGrey, '1'),
+                  touchableImage(this.handleFemale, this.state.female ? images.female : images.femaleGrey, '0')             
+                ]
+              }            
             </View>
-            <TextInput
-              style={[styles.textInput, styles.height, styles.margins]}
-              onChangeText={weight => this.setState({weight})}
-              value={this.state.weight}
-              keyboardType={'numeric'}
-              placeholder={'kg'}
-            />
-            <TextInput
-              style={[styles.textInput, styles.height, styles.margins]}
-              onChangeText={height => this.setState({height})}
-              value={this.state.height}
-              keyboardType={'numeric'}
-              placeholder={'cm'}
-            />
-            <TextInput
-              style={[styles.textInput, styles.height, styles.margins]}
-              onChangeText={age => this.setState({age})}
-              value={this.state.age}
-              keyboardType={'numeric'}
-              placeholder={'years'}
-            />
+            {
+              [
+                textInput('weight', 'kg'),
+                textInput('height', 'cm'),
+                textInput('age', 'years')
+              ]
+            }
             <View style={styles.textInput}>
               <Picker
                 selectedValue={this.state.maintenance}       
@@ -175,58 +214,20 @@ export default class Profile extends React.Component {
             <Picker.Item label='Very heavy exercise (twice per day)' value={1.9}/>
           </Picker>
         </View>
-        <View style={[styles.row, styles.margins]}>
-          <View style={{flex: 1}}>
-            <Button 
-              onPress={this.calculate}
-              title='Calculate'
-            />
-          </View>
-        </View>
-        {/* <View style={[styles.row, styles.margins]}>
-          <View style={{flex: 1}}>
-            <Button 
-              title='Save'
-            />
-          </View>
-        </View> */}
-      </View>
+        {
+          [
+            button(this.calculate, 'Calculate'),
+            button(this.saveData, 'Save'),
+            button(this.loadData, 'Load')
+          ]
+        }
+        <View>
+          <Text style={styles.text}>{calories}kcal</Text>
+          <Text style={styles.text}>{protein}g</Text>
+          <Text style={styles.text}>{carbs}g</Text>
+          <Text style={styles.text}>{fat}g</Text>
+        </View>        
+      </ScrollView>
     );
   }
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flexDirection: 'row',
-    alignItems: 'center'
-  },
-  column: {
-    flexDirection: 'column'
-  }, 
-  columnCenter: {
-    flexDirection: 'column',
-    justifyContent: 'center'
-  },  
-  rowIcons: {
-    flexDirection: 'row',
-    justifyContent: 'space-evenly'
-  },
-  row: {
-    flexDirection: 'row'
-  },
-  textInput: {
-    borderColor: 'grey',
-    borderBottomWidth: 2,
-    borderRadius: 10
-  },
-  height: {
-    height: 40,
-    padding: 5
-  },
-  margins: {
-    margin: 10
-  },
-  alignText: {
-    textAlignVertical: 'bottom'
-  }
-});
