@@ -6,10 +6,11 @@ import { View,
           TextInput, 
           Picker,
           Button,
-          ScrollView,
-          AsyncStorage } from 'react-native';
+          ScrollView } from 'react-native';
 import images from '../images';
 import styles from '../styles/styles'
+import { profileSchema, writeProfile } from '../database/schemas';
+import Realm from 'realm';
 
 export default class Profile extends React.Component {
 
@@ -26,34 +27,43 @@ export default class Profile extends React.Component {
       calories: 0,
       protein: 0,
       carbs: 0,
-      fat: 0
+      fat: 0,
+      realm: null
     }
   }
 
   componentDidMount() {
-    this.loadData();
+    Realm.open({
+      schema: [profileSchema]
+    }).then(realm => {
+      this.setState({ realm }, () => {
+        this.loadData();
+      });
+    });
   }
 
-  loadData = async () => {
-    try {
-      const value = await AsyncStorage.getItem('profile');
-      if (value !== null) {
-        const data = JSON.parse(value);
+  loadData = () => {
+    let realm = this.state.realm;
+    if (realm) {
+      let profile = realm.objectForPrimaryKey('profile', 0);
+      if (profile) {
         this.setState({
-          ...data
+          male: profile.male,
+          female: profile.female,
+          weight: profile.weight.toString(),
+          height: profile.height.toString(),
+          age: profile.age.toString(),
+          effort: profile.effort,
+          maintenance: profile.maintenance
         });
       }
-    } catch (error) {
-      //error of some sort
     }
   }
 
-  saveData = async () => {
-    const data = JSON.stringify(this.state);
-    try {
-      await AsyncStorage.setItem('profile', data);
-    } catch (error) {
-      //error of some sort
+  saveData = () => {
+    let { realm, male, female, weight, height, age, effort, maintenance } = this.state;
+    if (this.verify) {
+      writeProfile(realm, male, female, weight, height, age, effort, maintenance);
     }
   }
 

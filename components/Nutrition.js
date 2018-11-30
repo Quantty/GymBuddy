@@ -1,12 +1,14 @@
 import React from 'react';
-import { Text, View } from 'react-native';
+import { Text, View, ScrollView } from 'react-native';
+import Weekdays from './WeekDays';
 
 export default class Nutrition extends React.Component {
   render() {
     return (
-      <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-        <Text>Nutrition Screen</Text>
-      </View>
+      <ScrollView>
+        <Weekdays />
+        <Text>Nutrition</Text>
+      </ScrollView>
     );
   }
 }
