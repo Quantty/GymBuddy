@@ -4,9 +4,7 @@ import Nutrition from './components/Nutrition';
 
 const TabNavigator = createBottomTabNavigator({
   Profile: Profile,
-  Nutrition: { 
-    screen: Nutrition 
-  }
+  Nutrition: Nutrition
 }, {
   initialRouteName: 'Profile'
 });
