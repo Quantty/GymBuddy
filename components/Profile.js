@@ -8,9 +8,10 @@ import { View,
           Button,
           ScrollView } from 'react-native';
 import images from '../images';
-import styles from '../styles/styles'
+import { styles } from '../styles/styles'
 import { profileSchema, writeProfile } from '../database/schemas';
 import Realm from 'realm';
+import calculate from '../utils/nutrients';
 
 export default class Profile extends React.Component {
 
@@ -109,36 +110,10 @@ export default class Profile extends React.Component {
   }
 
   calculate = () => {
-    let { male, female, weight, height, age, effort, maintenance } = this.state,
-        rest = 0,
-        protein = 0,
-        carbs = 0,
-        fat = 0;
+    let { male, female, weight, height, age, effort, maintenance } = this.state;
     if (this.verify()) {
-      weight = Number(weight);
-      height = Number(height);
-      age = Number(age);
-      if (male) {
-        rest = 5;
-      }
-      if (female) {
-        rest = -161;
-      }
-      let bmr = 10 * weight + 6.25 * height - 5 * age + rest;
-      let calories = Math.round(bmr * effort + maintenance);
-      if (effort === 1.2) {
-        protein = Math.round(0.8 * weight);
-      } else {
-        protein = Math.round(1.6 * weight);
-      }
-      fat = Math.round(((calories - protein * 4) * 0.3) / 9);
-      carbs = Math.round((calories - protein * 4 - fat * 9) / 4);
-      this.setState({
-        calories,
-        protein,
-        carbs,
-        fat
-      })
+      let result = calculate(weight, height, age, male, female, effort, maintenance);
+      this.setState(result);
     }
   }
 
@@ -204,9 +179,9 @@ export default class Profile extends React.Component {
                 selectedValue={this.state.maintenance}       
                 onValueChange={(itemValue, itemIndex) => this.setState({maintenance: itemValue})}
               >
-                <Picker.Item label='Lose weight' value={-500}/>
+                <Picker.Item label='Lose weight' value={-10}/>
                 <Picker.Item label='Maintain weight' value={0}/>
-                <Picker.Item label='Gain weight' value={500}/>
+                <Picker.Item label='Gain weight' value={10}/>
             </Picker>
           </View>
           </View>

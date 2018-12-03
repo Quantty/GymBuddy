@@ -1,4 +1,4 @@
-import { createBottomTabNavigator, createStackNavigator, createAppContainer } from 'react-navigation';
+import { createBottomTabNavigator, createAppContainer } from 'react-navigation';
 import Profile from './components/Profile';
 import Nutrition from './components/Nutrition';
 
