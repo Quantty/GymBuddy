@@ -1,14 +1,26 @@
-import { createBottomTabNavigator, createAppContainer } from 'react-navigation';
+import { createBottomTabNavigator, createStackNavigator, createAppContainer } from 'react-navigation';
 import Profile from './components/Profile';
 import Nutrition from './components/Nutrition';
+import SearchFood from './components/SearchFood';
+import Realm from 'realm';
 
 const TabNavigator = createBottomTabNavigator({
-  Profile: Profile,
-  Nutrition: Nutrition
+  Profile: { screen: Profile },
+  Nutrition: createStackNavigator({
+              Main: { screen: Nutrition },
+              Search: { screen: SearchFood }
+            }, { 
+              initialRouteName: 'Main'
+            })
 }, {
   initialRouteName: 'Profile'
 });
 
-const AppContainer = createAppContainer(TabNavigator);
+const App = () => {
+  Realm.copyBundledRealmFiles();
+  return createAppContainer(TabNavigator);
+}
+
+const AppContainer = App();
 
 export default AppContainer;

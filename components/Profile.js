@@ -119,7 +119,7 @@ export default class Profile extends React.Component {
 
   render() {
     const { calories, protein, carbs, fat } = this.state;
-    textInput = (key, placeholder) => 
+    const textInput = (key, placeholder) => 
       <TextInput
         key={key}
         style={[styles.textInput, styles.height, styles.margins]}
@@ -130,7 +130,7 @@ export default class Profile extends React.Component {
         keyboardType={'numeric'}
         placeholder={placeholder}
       />;
-    button = (onPress, title) =>
+    const button = (onPress, title) =>
       <View style={[styles.row, styles.margins]} key={'button'.concat(title)}>
         <View style={{flex: 1}}>
           <Button 
@@ -139,7 +139,7 @@ export default class Profile extends React.Component {
           />
         </View>
       </View>
-    touchableImage = (onPress, source, key) =>
+    const touchableImage = (onPress, source, key) =>
       <TouchableOpacity
         key={'touchableImage'.concat(key)}
         onPress={onPress}

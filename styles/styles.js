@@ -31,6 +31,10 @@ export const styles = StyleSheet.create({
   margins: {
     margin: 10
   },
+  marginsLeftRight: {
+    marginLeft: 10,
+    marginRight: 10
+  },
   alignText: {
     textAlignVertical: 'center'
   },
@@ -39,7 +43,20 @@ export const styles = StyleSheet.create({
     fontSize: 20
   },
   dateRow: {
-    backgroundColor: '#dadada'
+    backgroundColor: '#dcdcdc'
+  },
+  progressBar: {
+    height: 10,
+    borderRadius: 50,
+    minWidth: 10
+  },
+  filler: {
+    borderRadius: 50,
+    height: 10
+  },
+  borderLeft: {
+    borderColor: 'black',
+    borderLeftWidth: 1
   }
 });
 
@@ -54,7 +71,7 @@ export const triangles = StyleSheet.create({
     borderBottomWidth: 30,
     borderLeftColor: 'transparent',
     borderRightColor: 'transparent',
-    borderBottomColor: 'grey'
+    borderBottomColor: 'black'
   },
   triangleLeft: {
     transform: [

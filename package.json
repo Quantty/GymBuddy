@@ -7,12 +7,11 @@
     "ios": "react-native run-ios"
   },
   "dependencies": {
-    "expo": "^31.0.5",
-    "expo-cli": "^2.4.0",
-    "npm": "^6.4.1",
-    "react": "16.5.0",
-    "react-native": "https://github.com/expo/react-native/archive/sdk-31.0.0.tar.gz",
-    "react-navigation": "^3.0.0-rc.0",
+    "react": "16.6.3",
+    "react-native": "^0.57.5",
+    "react-native-fs": "^2.12.1",
+    "react-native-gesture-handler": "^1.0.10",
+    "react-navigation": "^3.0.0",
     "realm": "^2.20.0"
   },
   "devDependencies": {

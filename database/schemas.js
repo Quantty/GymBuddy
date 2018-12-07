@@ -13,6 +13,19 @@ export const profileSchema = {
   }
 }
 
+export const foodSchema = {
+  name: 'food',
+  primaryKey: 'id',
+  properties: {
+    id: 'string',
+    name: 'string',
+    protein: 'double',
+    carbs: 'double',
+    fat: 'double',
+    calories: 'int'
+  }
+}
+
 export const writeProfile = (realm, male, female, weight, height, age, effort, maintenance) => {
   if (!realm) {
     return;
