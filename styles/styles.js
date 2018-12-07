@@ -21,8 +21,7 @@ export const styles = StyleSheet.create({
   },
   textInput: {
     borderColor: 'grey',
-    borderBottomWidth: 2,
-    borderRadius: 10
+    borderBottomWidth: 1
   },
   height: {
     height: 40,

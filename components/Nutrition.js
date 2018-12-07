@@ -20,7 +20,7 @@ export default class Nutrition extends React.Component {
       protein: 0,
       carbs: 0,
       fat: 0,
-      realm: null,
+      realmProfile: null,
       caloriest: 0,
       proteint: 0,
       carbst: 0,
@@ -29,29 +29,26 @@ export default class Nutrition extends React.Component {
     }
   }
 
-  componentDidMount() {
-    Realm.open({
+  async componentDidMount() {
+    let realmProfile = await Realm.open({
       schema: [profileSchema]
-    }).then(realm => {
-      this.setState({ realm }, () => {
-        realm.addListener('change', this.loadData);
-        this.loadData();
-      });
     });
-    Realm.open({
+    let realmFood = await Realm.open({
       path: 
         Platform.OS === 'ios' 
         ? RNFS.MainBundlePath + '/food.realm'
         : RNFS.DocumentDirectoryPath + '/food.realm',
       schema: [foodSchema],
       readOnly: true
-    }).then(realmFood => {
-      this.setState({ realmFood });
+    });
+    this.setState({ realmProfile, realmFood }, () => {
+      realmProfile.addListener('change', this.loadData);
+      this.loadData();
     });
   }
 
   loadData = () => {
-    let profile = this.state.realm.objectForPrimaryKey('profile', 0);
+    let profile = this.state.realmProfile.objectForPrimaryKey('profile', 0);
     if (profile) {
       let result = calculate(
         profile.weight,
@@ -97,63 +94,63 @@ export default class Nutrition extends React.Component {
     const { navigate } = this.props.navigation;
 
     const line =
-      <View style={styles.borderLeft}/>
+        <View style={styles.borderLeft}/>
 
     const date = 
-      <TouchableOpacity onPress={this.resetDate} style={[{flex: 1}]}>
-        <View style={{alignSelf: 'center'}}>
-          <Text style={styles.text}>
-            {
-              chosenDate.toLocaleDateString() === new Date().toLocaleDateString()
-                ? 'Today'
-                : chosenDate.toLocaleDateString()
-            }
-          </Text>
-        </View>
-      </TouchableOpacity>
+        <TouchableOpacity onPress={this.resetDate} style={[{flex: 1}]}>
+          <View style={{alignSelf: 'center'}}>
+            <Text style={styles.text}>
+              {
+                chosenDate.toLocaleDateString() === new Date().toLocaleDateString()
+                  ? 'Today'
+                  : chosenDate.toLocaleDateString()
+              }
+            </Text>
+          </View>
+        </TouchableOpacity>
 
     const dateRow = 
-      <View style={[styles.row, styles.dateRow, {paddingTop: 7, paddingBottom: 7}]}>
-        <TouchableOpacity onPress={this.decrementDate} style={{flex: 1}}>
-          <View style={[triangles.triangle, triangles.triangleLeft, {alignSelf: 'center'}]} />
-        </TouchableOpacity>
-        {line}
-        {date}
-        {line}
-        <TouchableOpacity onPress={this.incrementDate} style={{flex: 1}}>
-          <View style={[triangles.triangle, triangles.triangleRight, {alignSelf: 'center'}]} />
-        </TouchableOpacity>
-      </View>
+        <View style={[styles.row, styles.dateRow, {paddingTop: 7, paddingBottom: 7}]}>
+          <TouchableOpacity onPress={this.decrementDate} style={{flex: 1}}>
+            <View style={[triangles.triangle, triangles.triangleLeft, {alignSelf: 'center'}]} />
+          </TouchableOpacity>
+          {line}
+          {date}
+          {line}
+          <TouchableOpacity onPress={this.incrementDate} style={{flex: 1}}>
+            <View style={[triangles.triangle, triangles.triangleRight, {alignSelf: 'center'}]} />
+          </TouchableOpacity>
+        </View>
 
     const progressBar = (color, backgroundColor, text, nr, total, unit) => {
-      let calc = Math.round(nr / total * 100);
-      let width = calc > total ? '100%' : calc + '%';
-      return <View style={{flex: 1}}>
-        <Text style={{color, alignSelf: 'center'}}>{text}</Text>
-        <View 
-          style={[
-            styles.progressBar, 
-            {flex: 1, marginLeft: 5, marginRight: 5, backgroundColor}
-          ]}>
-          <View style={[styles.filler, {width, backgroundColor: color}]} />
+        let calc = Math.round(nr / total * 100);
+        let width = calc > total ? '100%' : calc + '%';
+        return <View style={{flex: 1}}>
+          <Text style={{color, alignSelf: 'center'}}>{text}</Text>
+          <View 
+            style={[
+              styles.progressBar, 
+              {flex: 1, marginLeft: 5, marginRight: 5, backgroundColor}
+            ]}>
+            <View style={[styles.filler, {width, backgroundColor: color}]} />
+          </View>
+          <Text style={{color, alignSelf: 'center'}}>{nr} / {total} {unit}</Text>
         </View>
-        <Text style={{color, alignSelf: 'center'}}>{nr} / {total} {unit}</Text>
-      </View>
     }
 
     const food = 
-      <View>
-        <View style={[styles.row, styles.dateRow, {padding: 10}]}>
-          <Text style={{fontSize: 15}}>Foods</Text>
+        <View>
+          <View style={[styles.row, styles.dateRow, {padding: 10}]}>
+            <Text style={{fontSize: 15}}>Foods</Text>
+          </View>
+          <TouchableOpacity onPress={() => navigate('Search', { realmFood })}>
+            <Text 
+              style={{fontSize: 15, alignSelf: 'center', color: '#658E9C', fontWeight: 'bold', padding: 10}}
+            >
+              Add food
+            </Text>
+          </TouchableOpacity>
         </View>
-        <TouchableOpacity onPress={() => navigate('Search')}>
-          <Text 
-            style={{fontSize: 15, alignSelf: 'center', color: '#658E9C', fontWeight: 'bold', padding: 10}}
-          >
-            Add food
-          </Text>
-        </TouchableOpacity>
-      </View>
 
     return (
       <ScrollView>
