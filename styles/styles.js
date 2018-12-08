@@ -5,6 +5,24 @@ export const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center'
   },
+  containerBox: {
+    borderRadius: 4,
+    borderWidth: 1,
+    borderColor: '#222222',
+    padding: 10,
+    margin: 10,
+    justifyContent: 'center'
+  },
+  containerBox2: {
+    borderRadius: 3,
+    borderWidth: 1,
+    borderColor: '#ABD2FA',
+    margin : 3,
+    justifyContent: 'center'
+  },
+  buttonList:{
+    backgroundColor: 'white'
+  },
   column: {
     flexDirection: 'column'
   }, 
