@@ -24,10 +24,10 @@ NutritionStack.navigationOptions = ({ navigation }) => {
 
 const TabNavigator = createBottomTabNavigator({
   Profile: { screen: Profile },
-  Nutrition: { screen: NutritionStack }
+  Nutrition: { screen: NutritionStack },
   Fitness: { screen: Fitness }
 }, {
-  initialRouteName: 'Fitness'
+  initialRouteName: 'Profile'
 });
 
 const App = () => {
