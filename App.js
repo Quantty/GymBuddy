@@ -2,6 +2,7 @@ import { createBottomTabNavigator, createStackNavigator, createAppContainer } fr
 import Profile from './components/Profile';
 import Nutrition from './components/Nutrition';
 import SearchFood from './components/SearchFood';
+import Fitness from './components/Fitness';
 import Realm from 'realm';
 
 const TabNavigator = createBottomTabNavigator({
@@ -11,9 +12,10 @@ const TabNavigator = createBottomTabNavigator({
               Search: { screen: SearchFood }
             }, { 
               initialRouteName: 'Main'
-            })
+            }),
+  Fitness: { screen: Fitness }
 }, {
-  initialRouteName: 'Profile'
+  initialRouteName: 'Fitness'
 });
 
 const App = () => {
