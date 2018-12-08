@@ -12,7 +12,7 @@ export default class SearchFood extends React.Component {
       fontWeight: 'bold',
     },
     headerStyle: {
-      backgroundColor: '#00A6FB'
+      backgroundColor: '#dcdcdc'
     }
   }
 
@@ -20,22 +20,23 @@ export default class SearchFood extends React.Component {
     super(props);
     this.state = {
       search: '',
-      chosenFood: null
+      chosenFood: null,
+      grams: 100
     }
   }
 
-  selectFood = item => {
-    console.log(item);
+  selectFood = chosenFood => {
+    this.setState({ chosenFood });
   }
 
   render() {
     const { navigation } = this.props;
     const realmFood = navigation.getParam('realmFood', null);
-    const { search } = this.state;
+    const { search, chosenFood } = this.state;
 
     const searchField =
         <TextInput
-          style={[styles.textInput, { padding: 10, backgroundColor: '#00A6FB' }]}
+          style={[styles.textInput, { padding: 10, borderTopWidth: 2, borderBottomWidth: 2 }, styles.dateRow]}
           onChangeText={search => 
             this.setState({
               search
@@ -47,11 +48,11 @@ export default class SearchFood extends React.Component {
 
     const filterArray =
         realmFood && search.trim().length >= 2
-        ? search.trim().split(' ').map(value => `name CONTAINS[c] "${value}"`)
-        : [];
+          ? search.trim().split(' ').map(value => `name CONTAINS[c] "${value}"`)
+          : [];
 
-    const presentFood = (item) => 
-        <View style={{padding: 10}}>
+    const presentFood = (item, padding = 10) => 
+        <View style={{padding}}>
           <Text style={{fontSize: 16, fontWeight: '400'}}>{item.name}</Text>
           <Text>P: {item.protein} g, C: {item.carbs} g, F: {item.fat} g, kcal: {item.calories}</Text>
         </View>
@@ -71,8 +72,21 @@ export default class SearchFood extends React.Component {
             />
           : null;
 
+    const chosen =
+        chosenFood
+          ? <View>
+            {presentFood(chosenFood)}
+            <View style={styles.row}>
+              <TextInput style={[styles.textInput, {padding: 10}]}/>
+            </View>
+          </View>
+          : <View style={{padding: 10}}>
+            <Text style={{fontSize: 16, fontWeight: '400', alignSelf: 'center'}}>Please choose an item</Text>
+          </View>
+
     return (
       <View>
+        {chosen}
         {searchField}
         {foodList}
       </View>

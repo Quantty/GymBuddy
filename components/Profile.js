@@ -118,6 +118,7 @@ export default class Profile extends React.Component {
 
   render() {
     const { calories, protein, carbs, fat } = this.state;
+
     const textInput = (key, placeholder) => 
       <TextInput
         key={key}
@@ -129,6 +130,7 @@ export default class Profile extends React.Component {
         keyboardType={'numeric'}
         placeholder={placeholder}
       />;
+
     const button = (onPress, title) =>
       <View style={[styles.row, styles.margins]} key={'button'.concat(title)}>
         <View style={{flex: 1}}>
@@ -138,6 +140,7 @@ export default class Profile extends React.Component {
           />
         </View>
       </View>
+
     const touchableImage = (onPress, source, key) =>
       <TouchableOpacity
         key={'touchableImage'.concat(key)}
@@ -147,6 +150,7 @@ export default class Profile extends React.Component {
           source={source}
         />
       </TouchableOpacity>
+      
     return (
       <ScrollView>
         <View style={[styles.container, styles.margins]}>
