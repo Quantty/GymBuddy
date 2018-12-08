@@ -33,13 +33,12 @@ export default class Profile extends React.Component {
     }
   }
 
-  componentDidMount() {
-    Realm.open({
+  async componentDidMount() {
+    let realm = await Realm.open({
       schema: [profileSchema]
-    }).then(realm => {
-      this.setState({ realm }, () => {
-        this.loadData();
-      });
+    });
+    this.setState({ realm }, () => {
+      this.loadData();
     });
   }
 

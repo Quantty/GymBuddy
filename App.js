@@ -5,14 +5,26 @@ import SearchFood from './components/SearchFood';
 import Fitness from './components/Fitness';
 import Realm from 'realm';
 
+const NutritionStack = createStackNavigator({
+  Main: { screen: Nutrition },
+  Search: { screen: SearchFood }
+}, { 
+  initialRouteName: 'Main'
+});
+
+NutritionStack.navigationOptions = ({ navigation }) => {
+  let tabBarVisible = true;
+  if (navigation.state.index > 0) {
+    tabBarVisible = false;
+  }
+  return {
+    tabBarVisible
+  }
+}
+
 const TabNavigator = createBottomTabNavigator({
   Profile: { screen: Profile },
-  Nutrition: createStackNavigator({
-              Main: { screen: Nutrition },
-              Search: { screen: SearchFood }
-            }, { 
-              initialRouteName: 'Main'
-            }),
+  Nutrition: { screen: NutritionStack }
   Fitness: { screen: Fitness }
 }, {
   initialRouteName: 'Fitness'
