@@ -1,11 +1,17 @@
 import React from 'react';
-import { Text, View, ScrollView, TouchableOpacity,Picker,Button,Image} from 'react-native';
-import { Badge } from 'react-native-elements';
+import { Text, View, ScrollView, TouchableOpacity ,Picker,Button,Image} from 'react-native';
+import {Badge} from 'react-native-elements';
 import { styles } from '../styles/styles';
+import { profileSchema, foodSchema } from '../database/schemas';
+import Realm from 'realm';
 import images from '../images';
+import Workout from './Workout';
 
 
 export default class Fitness extends React.Component {
+    static navigationOptions = {
+        header: null
+      }
     constructor(props) {
         super(props);
         this.state = {
@@ -42,10 +48,15 @@ export default class Fitness extends React.Component {
         }
     }
     addWorkout=()=>{
-        
+        const { navigate } = this.props.navigation;
+        navigate('Workout')
+    }
+    editWorkout=(item)=>{
+        const { navigate } = this.props.navigation;
+        navigate('Workout',{item})
     }
     hideShow=(item)=>{
-        var list = this.state.workoutList
+        var list = [...this.state.workoutList]
         list.forEach(elem =>{
             if(elem === item){
                 elem.showEx = !elem.showEx
@@ -54,7 +65,7 @@ export default class Fitness extends React.Component {
         this.setState({workoutList : list})
     }
     setDay=(item, day)=>{
-        var list = this.state.workoutList
+        var list = [...this.state.workoutList]
         list.forEach(elem =>{
             if(elem === item){
                 elem.day = day
@@ -96,7 +107,6 @@ export default class Fitness extends React.Component {
                     <Image style={{width: 13, height: 13}} source = {images.down} /></View>
                     <Badge
                             value={item.exercises.length}
-                            style= {alignText='right'}
                             containerStyle={{ backgroundColor: 'lightgrey'}}
                             textStyle={{ color: 'orange' }}
                         />
@@ -105,7 +115,13 @@ export default class Fitness extends React.Component {
                     item.exercises.map((ex,ind)=>{
                     return( <Text style={[{fontSize: 16},{textAlign:'center'}]} key = {ind}>{ex.name} {ex.series.toString()}</Text>);
                     }):<Text/>
-                } 
+                }
+                <View style={[{ width: "15%", alignSelf: 'flex-end'}]}>
+                    <TouchableOpacity  onPress={e =>this.editWorkout(item)}>
+                        <Text style={[{color:'black'},{backgroundColor: '#FFFD77'},{alignSelf: 'center'},
+                                        {padding: 5},{fontSize: 16},{fontStyle: 'normal'}]}>Edit </Text>
+                    </TouchableOpacity>
+                </View>
             </View>
         )
     }
