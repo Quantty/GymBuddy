@@ -20,6 +20,9 @@ export const styles = StyleSheet.create({
     margin : 3,
     justifyContent: 'center'
   },
+  font18:{
+    fontSize: 18
+  },
   buttonList:{
     backgroundColor: 'white'
   },

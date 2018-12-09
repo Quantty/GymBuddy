@@ -3,6 +3,7 @@ import Profile from './components/Profile';
 import Nutrition from './components/Nutrition';
 import SearchFood from './components/SearchFood';
 import Fitness from './components/Fitness';
+import Workout from './components/Workout';
 import Realm from 'realm';
 
 const NutritionStack = createStackNavigator({
@@ -11,6 +12,22 @@ const NutritionStack = createStackNavigator({
 }, { 
   initialRouteName: 'Main'
 });
+
+const FitnessStack = createStackNavigator({
+  Main: { screen: Fitness },
+  Workout: { screen: Workout }
+}, { 
+  initialRouteName: 'Main'
+});
+FitnessStack.navigationOptions = ({ navigation }) => {
+  let tabBarVisible = true;
+  if (navigation.state.index > 0) {
+    tabBarVisible = false;
+  }
+  return {
+    tabBarVisible
+  }
+}
 
 NutritionStack.navigationOptions = ({ navigation }) => {
   let tabBarVisible = true;
@@ -25,7 +42,7 @@ NutritionStack.navigationOptions = ({ navigation }) => {
 const TabNavigator = createBottomTabNavigator({
   Profile: { screen: Profile },
   Nutrition: { screen: NutritionStack },
-  Fitness: { screen: Fitness }
+  Fitness: { screen: FitnessStack }
 }, {
   initialRouteName: 'Profile'
 });
