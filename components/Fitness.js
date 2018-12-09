@@ -1,12 +1,8 @@
 import React from 'react';
-import { Text, View, ScrollView, TouchableOpacity, Platform ,Header,Picker,Button,Image} from 'react-native';
-import {Badge,Icon} from 'react-native-elements';
-import { styles, triangles } from '../styles/styles';
-import { profileSchema, foodSchema } from '../database/schemas';
-import Realm from 'realm';
+import { Text, View, ScrollView, TouchableOpacity,Picker,Button,Image} from 'react-native';
+import { Badge } from 'react-native-elements';
+import { styles } from '../styles/styles';
 import images from '../images';
-import calculate from '../utils/nutrients';
-import RNFS from 'react-native-fs';
 
 
 export default class Fitness extends React.Component {

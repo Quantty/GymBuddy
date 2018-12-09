@@ -1,8 +1,6 @@
 import React from 'react';
-import { Text, View, ScrollView, TouchableOpacity, FlatList, TextInput } from 'react-native';
+import { Text, View, Button, TouchableOpacity, FlatList, TextInput } from 'react-native';
 import { styles } from '../styles/styles';
-import { foodSchema } from '../database/schemas';
-import Realm from 'realm';
 
 export default class SearchFood extends React.Component {
 
@@ -19,9 +17,9 @@ export default class SearchFood extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      search: '',
+      search: 'sausage beef',
       chosenFood: null,
-      grams: 100
+      grams: '100'
     }
   }
 
@@ -76,8 +74,30 @@ export default class SearchFood extends React.Component {
         chosenFood
           ? <View>
             {presentFood(chosenFood)}
-            <View style={styles.row}>
-              <TextInput style={[styles.textInput, {padding: 10}]}/>
+            <View style={[styles.row, {padding: 5}]}>
+              <View style={{flex: 0.2}}>
+                <TextInput 
+                  style={[{borderBottomWidth: 1, flex: 1}]}
+                  value={this.state.grams}
+                  onChangeText={grams => this.setState({grams})}
+                />
+              </View>
+              <View style={{flex: 0.8}}>
+                <View style={styles.row}>
+                  <TouchableOpacity
+                    onPress={() => {}}
+                    style={{flex: 1}}
+                  >
+                    <Text>Save</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    style={{flex: 1}}
+                    onPress={() => this.setState({chosenFood: null})}
+                  >
+                    <Text>Delete</Text>
+                  </TouchableOpacity>
+                </View>
+              </View>
             </View>
           </View>
           : <View style={{padding: 10}}>
