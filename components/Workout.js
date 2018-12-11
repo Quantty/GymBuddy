@@ -75,7 +75,7 @@ export default class Workout extends React.Component {
         this.setState({exercises: list})
     }
     deleteExercise=(index)=>{
-        console.log('dfsdfsd');
+        console.log(index);
         
         Alert.alert(
             'Confirmation',
@@ -151,7 +151,7 @@ export default class Workout extends React.Component {
                                     {flex: 1},{alignSelf: 'center'}]} key ={index}>
                                     {textInputList(element.name, index, 'name')}         
                                     {textInputList(element.series.toString(), index, 'series')}
-                                    <View style={[{ width: "15%", alignSelf: 'center',flex: 1, margin:5, marginLeft:1}]}>
+                                    <View style={[{ alignSelf: 'center' }]}>
                                         <TouchableOpacity  onPress={() =>this.deleteExercise(index)}>
                                             <View style={{padding: 1}}>
                                                 <Image style={{width: 25, height: 25}} source = {images.delete} />
