@@ -1,5 +1,5 @@
 import React from 'react';
-import { Text, View, ScrollView, TouchableOpacity ,Picker,Button,Image} from 'react-native';
+import { Text, View, ScrollView, TouchableOpacity ,Picker,Button,Image, Alert} from 'react-native';
 import {Badge} from 'react-native-elements';
 import { styles } from '../styles/styles';
 import { profileSchema, foodSchema } from '../database/schemas';
@@ -17,43 +17,72 @@ export default class Fitness extends React.Component {
         this.state = {
             workoutList: [
                 {
-                    title: 'Title',
+                    title: 'Chest Day',
                     day:'Monday',
                     exercises: [
                         {
-                            name:'squats',
-                            series:[12,10,8]
+                            name:'Bench Press',
+                            series:[12,10,8,6]
                         },
                         {
-                            name:'biceps flex',
-                            series:[10,9]
+                            name:'Machine Decline Press',
+                            series:[10,9,7]
+                        },
+                        {
+                            name: "Incline Bench Cable Fly",
+                            series:[10,9,8]
                         }],
                     showEx: false
                 },
                 {
-                    title: 'Title2',
+                    title: 'Shoulders',
                     day: 'Tuesday',
                     exercises: [
                         {
-                            name:'squats',
+                            name:'Cable Reverse Flye',
                             series:[12,10,8]
                         },
                         {
-                            name:'biceps flex',
-                            series:[10,9],
+                            name:'Push Press',
+                            series:[10,9,8]
                         }],
-                    showEx: true
+                    showEx: false
                 }
             ]
         }
     }
+    addWorkoutItem=(item)=>{
+        var workouts = [...this.state.workoutList]
+        workouts.push(item)
+        this.setState({workoutList: workouts})
+    }
+    editWorkoutItem=(item, index)=>{
+        var workouts = [...this.state.workoutList]
+        workouts[index] = item 
+        this.setState({workoutList: workouts})  
+    }
+    deleteWorkout=(index)=>{
+        Alert.alert(
+            'Confirmation',
+            'Delete this item ?',
+            [
+              {text: 'Cancel', onPress: () => console.log('Cancel Pressed'), style: 'cancel'},
+              {text: 'OK', onPress: () => {
+                var workouts = [...this.state.workoutList]
+                workouts.splice(index,1)
+                this.setState({workoutList: workouts})  
+              }},
+            ],
+            { cancelable: true }
+          ) 
+    }
     addWorkout=()=>{
         const { navigate } = this.props.navigation;
-        navigate('Workout')
+        navigate('Workout',{addData: this.addWorkoutItem})
     }
-    editWorkout=(item)=>{
+    editWorkout=(item,index)=>{
         const { navigate } = this.props.navigation;
-        navigate('Workout',{item})
+        navigate('Workout',{object: item, index: index, saveData: this.editWorkoutItem})
     }
     hideShow=(item)=>{
         var list = [...this.state.workoutList]
@@ -101,7 +130,7 @@ export default class Fitness extends React.Component {
                 </View>
                 <View style={[styles.row, {alignSelf :'center'},{paddingTop:5}]}>
                     <TouchableOpacity  onPress={e =>this.hideShow(item)}>
-                        <Text style={[{fontSize: 18},{textAlign:'center'},{borderBottomWidth:1}]}>Exercise List </Text>
+                        <Text style={[{fontSize: 18},{textAlign:'center'},{borderBottomWidth:1}]}>Exercises </Text>
                     </TouchableOpacity>
                     <View style={{alignSelf:'center'}}>
                     <Image style={{width: 13, height: 13}} source = {images.down} /></View>
@@ -116,11 +145,20 @@ export default class Fitness extends React.Component {
                     return( <Text style={[{fontSize: 16},{textAlign:'center'}]} key = {ind}>{ex.name} {ex.series.toString()}</Text>);
                     }):<Text/>
                 }
-                <View style={[{ width: "15%", alignSelf: 'flex-end'}]}>
-                    <TouchableOpacity  onPress={e =>this.editWorkout(item)}>
-                        <Text style={[{color:'black'},{backgroundColor: '#FFFD77'},{alignSelf: 'center'},
+                <View style = {styles.row}>
+                 <View style={[{ width: "15%", alignSelf: 'flex-start',flex: 1}]}>
+                    <TouchableOpacity  onPress={e =>this.deleteWorkout(index)}>
+                        <View style={{padding: 1}}>
+                            <Image style={{width: 25, height: 25}} source = {images.delete} />
+                        </View>
+                    </TouchableOpacity>
+                </View>
+                <View style={[{ width: "15%", alignSelf: 'flex-end', flex: 1}]}>
+                    <TouchableOpacity  onPress={e =>this.editWorkout(item,index)}>
+                        <Text style={[{color:'black'},{backgroundColor: '#FFFD77'},{alignSelf: 'flex-end'},
                                         {padding: 5},{fontSize: 16},{fontStyle: 'normal'}]}>Edit </Text>
                     </TouchableOpacity>
+                </View>
                 </View>
             </View>
         )
@@ -140,7 +178,7 @@ export default class Fitness extends React.Component {
                             <Text style={{fontSize: 22}}>Fitness</Text>
                         </View>
 
-        var list = this.state.workoutList
+        var list = [...this.state.workoutList]
         return (<View>
                     {header}
                     
