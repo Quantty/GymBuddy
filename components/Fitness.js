@@ -179,7 +179,7 @@ export default class Fitness extends React.Component {
                         </View>
 
         var list = [...this.state.workoutList]
-        return (<View>
+        return (<View style={{flex:1}}>
                     {header}
                     
                     <ScrollView style={styles.marginsLeftRight}>
@@ -187,7 +187,7 @@ export default class Fitness extends React.Component {
                                 this.printElement(item, index)
                         )}
                         {this.state.workoutList[0]?
-                         <View style={styles.marginsLeftRight}>
+                         <View style={[styles.margins, styles.marginsLeftRight]}>
                             {addBtn}
                         </View>:
                          <View style={styles.containerBox}>
