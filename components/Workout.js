@@ -33,7 +33,7 @@ export default class Workout extends React.Component {
             this.setState({
                 title: workout.title,
                 day: workout.day,
-                exercises: workout.exercises,
+                exercises: [...workout.exercises],
                 new: false
             })
         }
@@ -66,7 +66,7 @@ export default class Workout extends React.Component {
                 key={key}
                 style={[styles.textInput, styles.height, styles.margins, styles.font18]}
                 onChangeText={value => this.setState({
-                title: value
+                    title: value
                 })}
                 value={this.state.title}
                 placeholder={placeholder}

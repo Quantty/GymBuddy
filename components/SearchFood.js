@@ -72,32 +72,29 @@ export default class SearchFood extends React.Component {
 
     const chosen =
         chosenFood
-          ? <View>
+          ? <View style={{padding: 5}}>
             {presentFood(chosenFood)}
-            <View style={[styles.row, {padding: 5}]}>
-              <View style={{flex: 0.2}}>
-                <TextInput 
-                  style={[{borderBottomWidth: 1, flex: 1}]}
-                  value={this.state.grams}
-                  onChangeText={grams => this.setState({grams})}
-                />
-              </View>
-              <View style={{flex: 0.8}}>
-                <View style={styles.row}>
-                  <TouchableOpacity
-                    onPress={() => {}}
-                    style={{flex: 1}}
-                  >
-                    <Text>Save</Text>
-                  </TouchableOpacity>
-                  <TouchableOpacity
-                    style={{flex: 1}}
-                    onPress={() => this.setState({chosenFood: null})}
-                  >
-                    <Text>Delete</Text>
-                  </TouchableOpacity>
-                </View>
-              </View>
+            <View style={[styles.row, {paddingBottom: 10, justifyContent: 'space-evenly'}]}>
+              <TextInput 
+                style={[{borderWidth: 1, flex: 0.8}]}
+                value={this.state.grams}
+                onChangeText={grams => this.setState({grams})}
+              />
+              <Text style={{fontSize: 20, fontWeight: '400', alignSelf: 'center'}}>grams</Text>
+            </View>
+            <View style={[styles.row, {justifyContent: 'space-evenly'}]}>
+              <TouchableOpacity
+                onPress={() => {}}
+                style={{backgroundColor: '#4392F1', borderWidth: 1, flex: 0.45, padding: 10}}
+              >
+                <Text style={{alignSelf: 'center'}}>Save</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => this.setState({chosenFood: null})}
+                style={{backgroundColor: '#DC493A', borderWidth: 1, flex: 0.45, padding: 10}}
+              >
+                <Text style={{alignSelf: 'center'}}>Remove</Text>
+              </TouchableOpacity>
             </View>
           </View>
           : <View style={{padding: 10}}>

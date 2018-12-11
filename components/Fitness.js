@@ -53,7 +53,7 @@ export default class Fitness extends React.Component {
     }
     editWorkout=(item)=>{
         const { navigate } = this.props.navigation;
-        navigate('Workout',{item})
+        navigate('Workout',{...item})
     }
     hideShow=(item)=>{
         var list = [...this.state.workoutList]
@@ -145,11 +145,9 @@ export default class Fitness extends React.Component {
                     {header}
                     
                     <ScrollView style={styles.marginsLeftRight}>
-                        {list.map((item, index) =>{ 
-                            return (
+                        {list.map((item, index) =>
                                 this.printElement(item, index)
-                            );
-                        })}
+                        )}
                         {this.state.workoutList[0]?
                          <View style={styles.marginsLeftRight}>
                             {addBtn}

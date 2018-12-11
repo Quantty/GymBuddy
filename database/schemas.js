@@ -13,6 +13,7 @@ export const profileSchema = {
   }
 }
 
+
 export const foodSchema = {
   name: 'food',
   primaryKey: 'id',
