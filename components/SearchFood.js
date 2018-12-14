@@ -18,7 +18,7 @@ export default class SearchFood extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      search: 'sausage beef',
+      search: '',
       chosenFood: null,
       grams: '100'
     }
