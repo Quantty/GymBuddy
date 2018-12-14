@@ -11,7 +11,13 @@ import images from '../images';
 export default class Nutrition extends React.Component {
 
   static navigationOptions = {
-    header: null
+    title: 'Nutrition',
+    headerTitleStyle: {
+      fontWeight: 'bold',
+    },
+    headerStyle: {
+      backgroundColor: '#dcdcdc'
+    }
   }
 
   constructor(props) {
@@ -192,7 +198,7 @@ export default class Nutrition extends React.Component {
         </TouchableOpacity>
 
     const dateRow = 
-        <View style={[styles.row, styles.dateRow, {paddingTop: 7, paddingBottom: 7}]}>
+        <View style={[styles.row, styles.dateRow, {paddingTop: 7, paddingBottom: 7, borderTopWidth: 1, borderBottomWidth: 1}]}>
           <TouchableOpacity onPress={this.decrementDate} style={{flex: 1}}>
             <View style={[triangles.triangle, triangles.triangleLeft, {alignSelf: 'center'}]} />
           </TouchableOpacity>
@@ -224,8 +230,8 @@ export default class Nutrition extends React.Component {
 
     const food = 
         <View style={{borderBottomWidth: 1}}>
-          <View style={[styles.row, styles.dateRow, {padding: 10}]}>
-            <Text style={{fontSize: 15}}>Foods</Text>
+          <View style={[styles.row, styles.dateRow, {padding: 10, borderTopWidth: 1, borderBottomWidth: 1}]}>
+            <Text style={{fontSize: 16, fontWeight: '400'}}>Foods</Text>
           </View>
           <TouchableOpacity onPress={() => navigate('Search', { realmFood, saveFood: this.saveFood })}>
             <Text 

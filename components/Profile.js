@@ -1,12 +1,5 @@
 import React from 'react';
-import { View, 
-          Image, 
-          TouchableOpacity, 
-          Text, 
-          TextInput, 
-          Picker,
-          Button,
-          ScrollView } from 'react-native';
+import { View, Image, TouchableOpacity, Text, TextInput, Picker, Button, ScrollView } from 'react-native';
 import images from '../images';
 import { styles } from '../styles/styles'
 import { profileSchema, writeProfile, dietSchema } from '../database/schemas';
@@ -14,6 +7,16 @@ import Realm from 'realm';
 import calculate from '../utils/nutrients';
 
 export default class Profile extends React.Component {
+
+  static navigationOptions = {
+    title: 'Profile',
+    headerTitleStyle: {
+      fontWeight: 'bold',
+    },
+    headerStyle: {
+      backgroundColor: '#dcdcdc'
+    }
+  }
 
   constructor() {
     super();
@@ -37,66 +40,83 @@ export default class Profile extends React.Component {
     let realm = await Realm.open({
       schema: [profileSchema, dietSchema]
     });
-    this.setState({ realm }, () => {
-      this.loadData();
-    });
+    const profile = this.loadData(realm);
+    if (profile) {
+      const result = this.calculateNutrition(profile.male, profile.female, profile.weight,
+        profile.height, profile.age, profile.effort, profile.maintenance);
+      const tempProfile = {...profile};
+      tempProfile.weight = tempProfile.weight.toString();
+      tempProfile.height = tempProfile.height.toString();
+      tempProfile.age = tempProfile.age.toString();
+      this.setState({ realm, ...tempProfile, ...result });
+    } else {
+      this.setState({ realm });
+    }
   }
 
-  loadData = () => {
-    let realm = this.state.realm;
+  handleLoading = (realm = this.state.realm) => {
+    const profile = this.loadData(realm);
+    if (profile) {
+      const result = this.calculateNutrition(profile.male, profile.female, profile.weight,
+        profile.height, profile.age, profile.effort, profile.maintenance);
+      const tempProfile = {...profile};
+      tempProfile.weight = tempProfile.weight.toString();
+      tempProfile.height = tempProfile.height.toString();
+      tempProfile.age = tempProfile.age.toString();
+      this.setState({ ...tempProfile, ...result });
+    }
+  }
+
+  loadData = (realm = this.state.realm) => {
     if (realm) {
       let profile = realm.objectForPrimaryKey('profile', 0);
       if (profile) {
-        this.setState({
-          male: profile.male,
-          female: profile.female,
-          weight: profile.weight.toString(),
-          height: profile.height.toString(),
-          age: profile.age.toString(),
-          effort: profile.effort,
-          maintenance: profile.maintenance
-        });
+        return profile;
       }
     }
+    return null;
   }
 
   saveData = () => {
     let { realm, male, female, weight, height, age, effort, maintenance } = this.state;
-    if (this.verify) {
+    if (this.verify(male, female, weight, height, age)) {
       writeProfile(realm, male, female, weight, height, age, effort, maintenance);
     }
   }
 
   handleMale = () => {
-    let { male, female } = this.state;
+    let { male, female, weight, height, age, effort, maintenance } = this.state;
     if (male) {
       male = false;
     } else {
       male = true;
       female = false;
     }
+    const result = this.calculateNutrition(male, female, weight, height, age, effort, maintenance);
     this.setState({
       male,
-      female
+      female,
+      ...result
     });
   }
 
   handleFemale = () => {
-    let { male, female } = this.state;
+    let { male, female, weight, height, age, effort, maintenance } = this.state;
     if (female) {
       female = false;
     } else {
       female = true;
       male = false;
     }
+    const result = this.calculateNutrition(male, female, weight, height, age, effort, maintenance);
     this.setState({
       male,
-      female
+      female,
+      ...result
     });
   }
 
-  verify = () => {
-    let { male, female, weight, height, age } = this.state;
+  verify = (male, female, weight, height, age) => {
     if (!male && !female) {
       return false;
     }
@@ -108,48 +128,68 @@ export default class Profile extends React.Component {
     return true;
   }
 
-  calculate = () => {
-    let { male, female, weight, height, age, effort, maintenance } = this.state;
-    if (this.verify()) {
+  calculateNutrition = (male, female, weight, height, age, effort, maintenance) => {
+    if (this.verify(male, female, weight, height, age)) {
       let result = calculate(weight, height, age, male, female, effort, maintenance);
-      this.setState(result);
+      return result;
     }
+    return {
+      calories: 0,
+      protein: 0,
+      carbs: 0,
+      fat: 0
+    }
+  }
+
+  handleChange = (key, value) => {
+    const tempState = {...this.state};
+    tempState[key] = value;
+    const result = this.calculateNutrition(tempState.male, tempState.female, tempState.weight, 
+      tempState.height, tempState.age, tempState.effort, tempState.maintenance);
+    this.setState({
+      [key]: value,
+      ...result
+    });
   }
 
   render() {
     const { calories, protein, carbs, fat } = this.state;
 
     const textInput = (key, placeholder) => 
-      <TextInput
-        key={key}
-        style={[styles.textInput, styles.height, styles.margins]}
-        onChangeText={value => this.setState({
-          [key]: value
-        })}
-        value={this.state[key]}
-        keyboardType={'numeric'}
-        placeholder={placeholder}
-      />;
+        <TextInput
+          key={key}
+          style={[styles.textInput, styles.height, styles.margins]}
+          onChangeText={value => this.handleChange(key, value)}
+          value={this.state[key]}
+          keyboardType={'numeric'}
+          placeholder={placeholder}
+        />;
 
     const button = (onPress, title) =>
-      <View style={[styles.row, styles.margins]} key={'button'.concat(title)}>
-        <View style={{flex: 1}}>
-          <Button 
-            onPress={onPress}
-            title={title}
-          />
+        <View style={[styles.row, styles.margins]} key={'button'.concat(title)}>
+          <View style={{flex: 1}}>
+            <Button 
+              onPress={onPress}
+              title={title}
+            />
+          </View>
         </View>
-      </View>
 
     const touchableImage = (onPress, source, key) =>
-      <TouchableOpacity
-        key={'touchableImage'.concat(key)}
-        onPress={onPress}
-      >
-        <Image 
-          source={source}
-        />
-      </TouchableOpacity>
+        <TouchableOpacity
+          key={'touchableImage'.concat(key)}
+          onPress={onPress}
+        >
+          <Image 
+            source={source}
+          />
+        </TouchableOpacity>
+
+    const nutritionRow = (name, number, unit) =>
+        <View style={{padding: 10, flexDirection: 'row', backgroundColor: '#dcdcdc', justifyContent: 'space-around'}}>
+          <Text style={{fontSize: 16, fontWeight: '400'}}>{name}</Text>
+          <Text style={{fontSize: 16, fontWeight: '400'}}>{number} {unit}</Text>
+        </View>
       
     return (
       <ScrollView>
@@ -163,24 +203,16 @@ export default class Profile extends React.Component {
           </View>
           <View style={[{flex: 1}, styles.column]}>
             <View style={[styles.rowIcons, styles.margins]}>
-              {
-                [
-                  touchableImage(this.handleMale, this.state.male ? images.male : images.maleGrey, '1'),
-                  touchableImage(this.handleFemale, this.state.female ? images.female : images.femaleGrey, '0')             
-                ]
-              }            
+              {touchableImage(this.handleMale, this.state.male ? images.male : images.maleGrey, '1')}
+              {touchableImage(this.handleFemale, this.state.female ? images.female : images.femaleGrey, '0')}                      
             </View>
-            {
-              [
-                textInput('weight', 'kg'),
-                textInput('height', 'cm'),
-                textInput('age', 'years')
-              ]
-            }
+              {textInput('weight', 'kg')}
+              {textInput('height', 'cm')}
+              {textInput('age', 'years')}
             <View style={styles.textInput}>
               <Picker
                 selectedValue={this.state.maintenance}       
-                onValueChange={(itemValue, itemIndex) => this.setState({maintenance: itemValue})}
+                onValueChange={(itemValue, itemIndex) => this.handleChange('maintenance', itemValue)}
               >
                 <Picker.Item label='Lose weight' value={-10}/>
                 <Picker.Item label='Maintain weight' value={0}/>
@@ -193,7 +225,7 @@ export default class Profile extends React.Component {
           <Picker
             selectedValue={this.state.effort}
             style={{ width: '100%' }}
-            onValueChange={(itemValue, itemIndex) => this.setState({effort: itemValue})}
+            onValueChange={(itemValue, itemIndex) => this.handleChange('effort', itemValue)}
           >
             <Picker.Item label='Little to no exercise' value={1.2}/>
             <Picker.Item label='Light exercise (1–3 days per week)' value={1.375}/>
@@ -202,19 +234,12 @@ export default class Profile extends React.Component {
             <Picker.Item label='Very heavy exercise (twice per day)' value={1.9}/>
           </Picker>
         </View>
-        {
-          [
-            button(this.calculate, 'Calculate'),
-            button(this.saveData, 'Save'),
-            button(this.loadData, 'Load')
-          ]
-        }
-        <View>
-          <Text style={styles.text}>{calories}kcal</Text>
-          <Text style={styles.text}>{protein}g</Text>
-          <Text style={styles.text}>{carbs}g</Text>
-          <Text style={styles.text}>{fat}g</Text>
-        </View>        
+        {nutritionRow('Calories', calories, 'kcal')}
+        {nutritionRow('Protein', protein, 'g')}
+        {nutritionRow('Carbs', carbs, 'g')}
+        {nutritionRow('Fat', fat, 'g')}  
+        {button(this.saveData, 'Save')}
+        {button(() => this.handleLoading(), 'Load')}    
       </ScrollView>
     );
   }
