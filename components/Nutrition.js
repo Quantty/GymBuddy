@@ -254,7 +254,7 @@ export default class Nutrition extends React.Component {
               tempItem.fat = Number((item.fat * item.grams / 100).toFixed(2));
               return (
                 <View style={{borderBottomColor: 'grey', borderBottomWidth: 1, flexDirection: 'row', justifyContent: 'space-between'}}>
-                  {presentFood(tempItem, 10, item.grams)}
+                  {presentFood(tempItem, 10, item.grams, 0.9)}
                   <TouchableOpacity 
                     onPress={() => this.removeFood(item, realm)}
                   >
