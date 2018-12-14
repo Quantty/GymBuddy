@@ -1,6 +1,5 @@
 import React from 'react';
 import { Text, View, ScrollView, TouchableOpacity ,Picker,Button,Image, Alert} from 'react-native';
-import {Badge} from 'react-native-elements';
 import { styles } from '../styles/styles';
 import { profileSchema, foodSchema } from '../database/schemas';
 import Realm from 'realm';
@@ -134,11 +133,11 @@ export default class Fitness extends React.Component {
                     </TouchableOpacity>
                     <View style={{alignSelf:'center'}}>
                     <Image style={{width: 13, height: 13}} source = {images.down} /></View>
-                    <Badge
+                    {/* <Badge
                             value={item.exercises.length}
                             containerStyle={{ backgroundColor: 'lightgrey'}}
                             textStyle={{ color: 'orange' }}
-                        />
+                        /> */}
                 </View>
                 {item.showEx?
                     item.exercises.map((ex,ind)=>{

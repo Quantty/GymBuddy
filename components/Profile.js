@@ -9,7 +9,7 @@ import { View,
           ScrollView } from 'react-native';
 import images from '../images';
 import { styles } from '../styles/styles'
-import { profileSchema, writeProfile } from '../database/schemas';
+import { profileSchema, writeProfile, dietSchema } from '../database/schemas';
 import Realm from 'realm';
 import calculate from '../utils/nutrients';
 
@@ -35,7 +35,7 @@ export default class Profile extends React.Component {
 
   async componentDidMount() {
     let realm = await Realm.open({
-      schema: [profileSchema]
+      schema: [profileSchema, dietSchema]
     });
     this.setState({ realm }, () => {
       this.loadData();

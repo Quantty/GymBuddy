@@ -27,6 +27,20 @@ export const foodSchema = {
   }
 }
 
+export const dietSchema = {
+  name: 'diet',
+  properties: {
+    id: 'string',
+    date: 'string',
+    name: 'string',
+    protein: 'double',
+    carbs: 'double',
+    fat: 'double',
+    calories: 'int',
+    grams: 'int'
+  }
+}
+
 export const writeProfile = (realm, male, female, weight, height, age, effort, maintenance) => {
   if (!realm) {
     return;

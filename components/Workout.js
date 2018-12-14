@@ -1,6 +1,5 @@
 import React from 'react';
 import { Text, View, ScrollView, TouchableOpacity ,Picker,Button,Image,TextInput,Alert} from 'react-native';
-import {Badge} from 'react-native-elements';
 import { styles } from '../styles/styles';
 import { profileSchema, foodSchema } from '../database/schemas';
 import Realm from 'realm';

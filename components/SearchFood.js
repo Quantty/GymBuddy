@@ -1,6 +1,7 @@
 import React from 'react';
-import { Text, View, Button, TouchableOpacity, FlatList, TextInput } from 'react-native';
+import { Text, View, TouchableOpacity, FlatList, TextInput } from 'react-native';
 import { styles } from '../styles/styles';
+import { presentFood } from './PresentFood';
 
 export default class SearchFood extends React.Component {
 
@@ -23,23 +24,24 @@ export default class SearchFood extends React.Component {
     }
   }
 
-  selectFood = chosenFood => {
-    this.setState({ chosenFood });
+  saveFoodBack = () => {
+    const { navigation } = this.props;
+    const saveFood = navigation.getParam('saveFood', null);
+    if (saveFood) {
+      saveFood(this.state.chosenFood, this.state.grams);
+      navigation.goBack();
+    }
   }
 
   render() {
     const { navigation } = this.props;
-    const realmFood = navigation.getParam('realmFood', null);
+    const realmFood = navigation.getParam('realmFood', null); 
     const { search, chosenFood } = this.state;
 
     const searchField =
         <TextInput
           style={[styles.textInput, { padding: 10, borderTopWidth: 2, borderBottomWidth: 2 }, styles.dateRow]}
-          onChangeText={search => 
-            this.setState({
-              search
-            })
-          }
+          onChangeText={search => this.setState({ search })}
           value={search}
           placeholder={'Search'}
         />;
@@ -49,24 +51,18 @@ export default class SearchFood extends React.Component {
           ? search.trim().split(' ').map(value => `name CONTAINS[c] "${value}"`)
           : [];
 
-    const presentFood = (item, padding = 10) => 
-        <View style={{padding}}>
-          <Text style={{fontSize: 16, fontWeight: '400'}}>{item.name}</Text>
-          <Text>P: {item.protein} g, C: {item.carbs} g, F: {item.fat} g, kcal: {item.calories}</Text>
-        </View>
-
     const foodList = 
         filterArray.length >= 1
           ? <FlatList
               data={realmFood.objects('food').filtered(filterArray.join(' AND '))}
               renderItem={({ item }) => (
                 <View style={{borderBottomColor: 'grey', borderBottomWidth: 1}}>
-                  <TouchableOpacity onPress={() => this.selectFood(item)}>
+                  <TouchableOpacity onPress={() => this.setState({ chosenFood: item })}>
                     {presentFood(item)}
                   </TouchableOpacity>
                 </View>
               )}
-              keyExtractor={(item, index) => item.id}
+              keyExtractor={(item, index) => item.id + index}
             />
           : null;
 
@@ -78,13 +74,14 @@ export default class SearchFood extends React.Component {
               <TextInput 
                 style={[{borderWidth: 1, flex: 0.8}]}
                 value={this.state.grams}
-                onChangeText={grams => this.setState({grams})}
+                onChangeText={grams => this.setState({ grams })}
+                keyboardType={'numeric'}
               />
               <Text style={{fontSize: 20, fontWeight: '400', alignSelf: 'center'}}>grams</Text>
             </View>
             <View style={[styles.row, {justifyContent: 'space-evenly'}]}>
               <TouchableOpacity
-                onPress={() => {}}
+                onPress={() => this.saveFoodBack()}
                 style={{backgroundColor: '#4392F1', borderWidth: 1, flex: 0.45, padding: 10}}
               >
                 <Text style={{alignSelf: 'center'}}>Save</Text>
