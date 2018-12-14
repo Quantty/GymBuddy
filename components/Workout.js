@@ -87,7 +87,7 @@ export default class Workout extends React.Component {
                 this.setState({exercises: list})
               }},
             ],
-            { cancelable: false }
+            { cancelable: true }
           )
     }
     render(){
@@ -103,8 +103,8 @@ export default class Workout extends React.Component {
             />;
         const textInputList = (data, index, key) => 
             <TextInput
-                key={index+data}
-                style={[styles.height, styles.margins, styles.font18,{width: key==='series'?'30%':'65%'},styles.containerBox2]}
+                key={index+key}
+                style={[styles.height, styles.margins, styles.font18,{flex: key==='series'?0.30:0.65},styles.containerBox2]}
                 onChangeText={value => this.setKey(value,index,key)}
                 keyboardType= {(key==='series'?'numeric':'default')}
                 maxLength = {25}
@@ -139,29 +139,27 @@ export default class Workout extends React.Component {
                     <Text style={[styles.height, styles.alignText, styles.margins,styles.font18]}>Exercise List:</Text>
                 </View>
                 <View style= {styles.containerBox}>
-                    <View style={[ styles.margins,{paddingHorizontal: 10}]}>
-                        <View style = {[{borderBottomWidth: 0.7},styles.row,{flex: 1},{alignSelf: 'center'}]}>
-                            <Text style={[styles.height, styles.margins,styles.font18,{width:'65%'}]}>Name:</Text>
-                            <Text style={[styles.height, styles.margins, styles.font18,{width:'30%'}]}>Series:</Text>
-                        </View>
-                        {this.state.exercises.map((element, index)=>{
-                            return(
-                                <View style = {[{borderBottomWidth: 0.7},styles.row,
-                                    {flex: 1},{alignSelf: 'center'}]} key ={index}>
-                                    {textInputList(element.name, index, 'name')}         
-                                    {textInputList(element.series.toString(), index, 'series')}
-                                    <View style={[{ alignSelf: 'center' }]}>
-                                        <TouchableOpacity  onPress={() =>this.deleteExercise(index)}>
-                                            <View style={{padding: 1}}>
-                                                <Image style={{width: 25, height: 25}} source = {images.delete} />
-                                            </View>
-                                        </TouchableOpacity>
-                                    </View>
-                                </View>
-                            )
-                        })}
+                    <View style = {[{borderBottomWidth: 0.7},styles.row,{flex: 1},{alignSelf: 'center'}]}>
+                        <Text style={[styles.height, styles.margins,styles.font18,{flex: 0.65}]}>Name:</Text>
+                        <Text style={[styles.height, styles.margins, styles.font18,{flex: 0.30}]}>Series:</Text>
                     </View>
-                    <View style={[{width:'30%'}, styles.margins, {alignSelf: 'center'}]}>
+                    {this.state.exercises.map((element, index)=>{
+                        return(
+                            <View style = {[{borderBottomWidth: 0.7},styles.row,
+                                {flex: 1},{alignSelf: 'center'}]} key ={index}>
+                                {textInputList(element.name, index, 'name')}         
+                                {textInputList(element.series.toString(), index, 'series')}
+                                <View style={[{ alignSelf: 'center' }]}>
+                                    <TouchableOpacity  onPress={() =>this.deleteExercise(index)}>
+                                        <View style={{padding: 1}}>
+                                            <Image style={{width: 25, height: 25}} source = {images.delete} />
+                                        </View>
+                                    </TouchableOpacity>
+                                </View>
+                            </View>
+                        )
+                    })}
+                    <View style={[{flex: 0.3}, styles.margins, {alignSelf: 'center'}]}>
                         <Button
                             onPress={e => this.addRow()}
                             title="Add Row"
@@ -169,11 +167,13 @@ export default class Workout extends React.Component {
                         />
                     </View>
                 </View>
-                <Button
-                    onPress={this.save}
-                    title="Save"
-                    color="#06A77D"
-                />
+                <View style = {styles.marginsLeftRight}>
+                    <Button 
+                        onPress={this.save}
+                        title="Save"
+                        color="#06A77D"
+                    />
+                </View>
             </ScrollView>
         )
     }
