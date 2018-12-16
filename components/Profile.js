@@ -8,18 +8,26 @@ import calculate from '../utils/nutrients';
 
 export default class Profile extends React.Component {
 
-  static navigationOptions = {
-    title: 'Profile',
-    headerTitleStyle: {
-      fontWeight: 'bold',
-    },
-    headerStyle: {
-      backgroundColor: '#dcdcdc'
+  static navigationOptions = ({ navigation }) => {
+    return {
+      title: 'Profile',
+      headerTitleStyle: {
+        fontWeight: 'bold',
+      },
+      headerStyle: {
+        backgroundColor: '#dcdcdc'
+      },
+      headerRight: (
+        <Button
+          onPress={() => navigation.navigate('Historic', { realm: navigation.getParam('realm', null) })}
+          title='Historic >'
+        />
+      )
     }
   }
 
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
     this.state = {
       male: false,
       female: false,
@@ -41,6 +49,7 @@ export default class Profile extends React.Component {
       schema: [profileSchema, dietSchema]
     });
     const profile = this.loadData(realm);
+    this.props.navigation.setParams({ realm });
     if (profile) {
       const result = this.calculateNutrition(profile.male, profile.female, profile.weight,
         profile.height, profile.age, profile.effort, profile.maintenance);
