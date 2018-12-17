@@ -45,12 +45,12 @@ android_library(
 
 android_build_config(
     name = "build_config",
-    package = "com.gymbuddy",
+    package = "com.empty-project-template",
 )
 
 android_resource(
     name = "res",
-    package = "com.gymbuddy",
+    package = "com.empty-project-template",
     res = "src/main/res",
 )
 

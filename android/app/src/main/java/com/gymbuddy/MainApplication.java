@@ -3,6 +3,11 @@ package com.gymbuddy;
 import android.app.Application;
 
 import com.facebook.react.ReactApplication;
+import com.avishayil.rnrestart.ReactNativeRestartPackage;
+import com.lugg.ReactNativeConfig.ReactNativeConfigPackage;
+import br.com.classapp.RNSensitiveInfo.RNSensitiveInfoPackage;
+import com.auth0.react.A0Auth0Package;
+import com.reactlibrary.RNAppAuthPackage;
 import com.horcrux.svg.SvgPackage;
 import com.swmansion.gesturehandler.react.RNGestureHandlerPackage;
 import io.realm.react.RealmReactPackage;
@@ -27,6 +32,11 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
+            new ReactNativeRestartPackage(),
+            new ReactNativeConfigPackage(),
+            new RNSensitiveInfoPackage(),
+            new A0Auth0Package(),
+            new RNAppAuthPackage(),
             new SvgPackage(),
             new RNGestureHandlerPackage(),
             new RealmReactPackage(),

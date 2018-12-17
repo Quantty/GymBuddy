@@ -1,10 +1,11 @@
-import { createBottomTabNavigator, createStackNavigator, createAppContainer } from 'react-navigation';
+import { createBottomTabNavigator, createSwitchNavigator, createStackNavigator, createAppContainer } from 'react-navigation';
 import Profile from './components/Profile';
 import Nutrition from './components/Nutrition';
 import SearchFood from './components/SearchFood';
 import Fitness from './components/Fitness';
 import Workout from './components/Workout';
 import Historic from './components/Historic';
+import Login from './components/Login';
 import Realm from 'realm';
 
 const ProfileStack = createStackNavigator({
@@ -56,9 +57,16 @@ const TabNavigator = createBottomTabNavigator({
   initialRouteName: 'Profile'
 });
 
+const SwitchNavigator = createSwitchNavigator({
+  Login: { screen: Login },
+  Application: { screen: TabNavigator}
+}, {
+  initialRouteName: 'Login'
+});
+
 const App = () => {
   Realm.copyBundledRealmFiles();
-  return createAppContainer(TabNavigator);
+  return createAppContainer(SwitchNavigator);
 }
 
 const AppContainer = App();
