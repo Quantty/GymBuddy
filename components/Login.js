@@ -1,13 +1,13 @@
-import React from "react";
-import { View, Text, Button, ActivityIndicator } from "react-native";
-import Auth0 from "react-native-auth0";
-import Config from "react-native-config";
-import SInfo from "react-native-sensitive-info";
-import RNRestart from "react-native-restart";
+import React from 'react';
+import { View, Text, Button, ActivityIndicator } from 'react-native';
+import Auth0 from 'react-native-auth0';
+import SInfo from 'react-native-sensitive-info';
+import RNRestart from 'react-native-restart';
+import config from '../config';
 
 const auth0 = new Auth0({
-  domain: Config.AUTH0_DOMAIN,
-  clientId: Config.AUTH0_CLIENT_ID
+  domain: config.AUTH0_DOMAIN,
+  clientId: config.AUTH0_CLIENT_ID
 });
 
 export default class Login extends React.Component {
@@ -25,7 +25,7 @@ export default class Login extends React.Component {
         auth0.auth
           .userInfo({ token: accessToken })
           .then(data => {
-            this.gotoAccount(data);
+            this.gotoApplication(data);
           })
           .catch(err => {
             SInfo.getItem('refreshToken', {}).then(refreshToken => {
@@ -33,7 +33,7 @@ export default class Login extends React.Component {
                 .refreshToken({ refreshToken })
                 .then(newAccessToken => {
                   SInfo.setItem('accessToken', newAccessToken);
-                  RNRestart.Restart();
+                  // RNRestart.Restart();
                 })
                 .catch(err2 => {
                   console.log(err2);
@@ -50,7 +50,7 @@ export default class Login extends React.Component {
 
   render() {
     return (
-      <View style={styles.container}>
+      <View>
         <ActivityIndicator
           size="large"
           color="#05a5d1"
@@ -67,8 +67,8 @@ export default class Login extends React.Component {
   login = () => {
     auth0.webAuth
       .authorize({
-        scope: Config.AUTHO_SCOPE,
-        audience: Config.AUTH0_AUDIENCE,
+        scope: config.AUTHO_SCOPE,
+        audience: config.AUTH0_AUDIENCE,
         prompt: "login"
       })
       .then(res => {

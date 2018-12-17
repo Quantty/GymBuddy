@@ -3,19 +3,17 @@ package com.gymbuddy;
 import android.app.Application;
 
 import com.facebook.react.ReactApplication;
-import com.avishayil.rnrestart.ReactNativeRestartPackage;
-import com.lugg.ReactNativeConfig.ReactNativeConfigPackage;
-import br.com.classapp.RNSensitiveInfo.RNSensitiveInfoPackage;
-import com.auth0.react.A0Auth0Package;
-import com.reactlibrary.RNAppAuthPackage;
-import com.horcrux.svg.SvgPackage;
-import com.swmansion.gesturehandler.react.RNGestureHandlerPackage;
 import io.realm.react.RealmReactPackage;
+import com.horcrux.svg.SvgPackage;
+import br.com.classapp.RNSensitiveInfo.RNSensitiveInfoPackage;
+import com.avishayil.rnrestart.ReactNativeRestartPackage;
+import com.swmansion.gesturehandler.react.RNGestureHandlerPackage;
+import com.rnfs.RNFSPackage;
+import com.auth0.react.A0Auth0Package;
 import com.facebook.react.ReactNativeHost;
 import com.facebook.react.ReactPackage;
 import com.facebook.react.shell.MainReactPackage;
 import com.facebook.soloader.SoLoader;
-import com.rnfs.RNFSPackage;
 
 import java.util.Arrays;
 import java.util.List;
@@ -32,15 +30,13 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
-            new ReactNativeRestartPackage(),
-            new ReactNativeConfigPackage(),
-            new RNSensitiveInfoPackage(),
-            new A0Auth0Package(),
-            new RNAppAuthPackage(),
-            new SvgPackage(),
-            new RNGestureHandlerPackage(),
             new RealmReactPackage(),
-            new RNFSPackage()
+            new SvgPackage(),
+            new RNSensitiveInfoPackage(),
+            new ReactNativeRestartPackage(),
+            new RNGestureHandlerPackage(),
+            new RNFSPackage(),
+            new A0Auth0Package()
       );
     }
 

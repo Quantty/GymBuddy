@@ -59,7 +59,7 @@ const TabNavigator = createBottomTabNavigator({
 
 const SwitchNavigator = createSwitchNavigator({
   Login: { screen: Login },
-  Application: { screen: TabNavigator}
+  Application: { screen: TabNavigator }
 }, {
   initialRouteName: 'Login'
 });
