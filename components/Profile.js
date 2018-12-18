@@ -5,6 +5,8 @@ import { styles } from '../styles/styles'
 import { profileSchema, writeProfile, dietSchema } from '../database/schemas';
 import Realm from 'realm';
 import calculate from '../utils/nutrients';
+import SInfo from 'react-native-sensitive-info';
+import config from '../config';
 
 export default class Profile extends React.Component {
 
@@ -45,9 +47,19 @@ export default class Profile extends React.Component {
   }
 
   async componentDidMount() {
-    let realm = await Realm.open({
+    const token = await SInfo.getItem('accessToken', {});
+    console.log(token);
+    const credentials = Realm.Sync.Credentials.jwt(token);
+    let user = await Realm.Sync.User.login(config.REALM_CLOUD, credentials);
+    let userConfig = user.createConfiguration({
+      sync: {
+        url: 'realms://bambuzlasdnai.de1a.cloud.realm.io/~/userRealm',
+        fullSynchronization: true,
+        error: err => console.log(err)
+      },
       schema: [profileSchema, dietSchema]
     });
+    let realm = await Realm.open(userConfig);
     const profile = this.loadData(realm);
     this.props.navigation.setParams({ realm });
     if (profile) {

@@ -6,7 +6,9 @@ import Realm from 'realm';
 import calculate from '../utils/nutrients';
 import RNFS from 'react-native-fs';
 import { presentFood } from './PresentFood';
+import SInfo from 'react-native-sensitive-info';
 import images from '../images';
+import config from '../config';
 
 export default class Nutrition extends React.Component {
 
@@ -38,9 +40,19 @@ export default class Nutrition extends React.Component {
   }
 
   async componentDidMount() {
-    let realm = await Realm.open({
+    
+    const token = await SInfo.getItem('accessToken', {});
+    const credentials = Realm.Sync.Credentials.jwt(token);
+    let user = await Realm.Sync.User.login(config.REALM_CLOUD, credentials);
+    let userConfig = user.createConfiguration({
+      sync: {
+        url: 'realms://bambuzlasdnai.de1a.cloud.realm.io/~/userRealm',
+        fullSynchronization: true,
+        error: err => console.log(err)
+      },
       schema: [profileSchema, dietSchema]
     });
+    let realm = await Realm.open(userConfig);
     let realmFood = await Realm.open({
       path: 
         Platform.OS === 'ios' 

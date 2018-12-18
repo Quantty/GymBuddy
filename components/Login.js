@@ -28,12 +28,13 @@ export default class Login extends React.Component {
             this.gotoApplication(data);
           })
           .catch(err => {
+            console.log(err);
             SInfo.getItem('refreshToken', {}).then(refreshToken => {
               auth0.auth
                 .refreshToken({ refreshToken })
                 .then(newAccessToken => {
-                  SInfo.setItem('accessToken', newAccessToken);
-                  // RNRestart.Restart();
+                  SInfo.setItem('accessToken', newAccessToken.accessToken, {});
+                  RNRestart.Restart();
                 })
                 .catch(err2 => {
                   console.log(err2);
