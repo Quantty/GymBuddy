@@ -26,6 +26,25 @@ export const foodSchema = {
     calories: 'int'
   }
 }
+export const workoutSchema = {
+  name: 'Workout',
+  primaryKey: 'id',
+  properties: {
+    id: { type: 'int', default: 0 },
+    title: { type: 'string', default: "" },
+    day: { type: 'string', default: "Monday" },
+    exercises: {type: 'Exercise[]'}
+  }
+}
+export const exerciseSchema = {
+  name: 'Exercise',
+  primaryKey: 'id',
+  properties: {
+    id: { type: 'int', default: 0 },
+    name: { type: 'string', default: "" },
+    series: { type: 'int[]', default: [] },
+  }
+}
 
 export const dietSchema = {
   name: 'diet',

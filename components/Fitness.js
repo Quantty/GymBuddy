@@ -1,7 +1,7 @@
 import React from 'react';
 import { Text, View, ScrollView, TouchableOpacity ,Picker,Button,Image, Alert} from 'react-native';
 import { styles } from '../styles/styles';
-import { profileSchema, foodSchema } from '../database/schemas';
+import { profileSchema, foodSchema, workoutSchema, exerciseSchema } from '../database/schemas';
 import Realm from 'realm';
 import images from '../images';
 import Workout from './Workout';
@@ -14,6 +14,7 @@ export default class Fitness extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
+            realm: null,
             workoutList: [
                 {
                     title: 'Chest Day',
@@ -50,6 +51,19 @@ export default class Fitness extends React.Component {
             ]
         }
     }
+    async componentDidMount(){
+        // Realm.open({
+        //     schema: [ exerciseSchema]
+        //   }).then(realm => {
+        //     realm.write(() => {
+        //       realm.create('Exercise', {
+        //         name: "Incline Bench Cable Fly",
+        //         series:[10,9,8]
+        //     });
+        //     });
+        //     this.setState({ realm });
+        //   });
+    }
     addWorkoutItem=(item)=>{
         var workouts = [...this.state.workoutList]
         workouts.push(item)
@@ -61,6 +75,9 @@ export default class Fitness extends React.Component {
         this.setState({workoutList: workouts})  
     }
     deleteWorkout=(index)=>{
+        console.log(
+        
+        this.state.realm.objects('Exercise'))
         Alert.alert(
             'Confirmation',
             'Delete this item ?',
