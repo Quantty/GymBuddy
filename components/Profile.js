@@ -2,7 +2,7 @@ import React from 'react';
 import { View, Image, TouchableOpacity, Text, TextInput, Picker, Button, ScrollView } from 'react-native';
 import images from '../images';
 import { styles } from '../styles/styles'
-import { profileSchema, writeProfile, dietSchema } from '../database/schemas';
+import { profileSchema, writeProfile, dietSchema, exerciseSchema, workoutSchema } from '../database/schemas';
 import Realm from 'realm';
 import calculate from '../utils/nutrients';
 import SInfo from 'react-native-sensitive-info';

@@ -30,6 +30,7 @@ export default class Workout extends React.Component {
         const workout = navigation.getParam('object', null);
         if(workout){
             this.setState({
+                id: workout.id,
                 title: workout.title,
                 day: workout.day,
                 exercises: [...workout.exercises],
@@ -39,8 +40,6 @@ export default class Workout extends React.Component {
     }
     setKey=(value,index,key)=>{
         const list = [...this.state.exercises]
-        console.log(list);
-        
         if(key === 'name'){
             list[index].name = value
         }else{
@@ -53,6 +52,7 @@ export default class Workout extends React.Component {
         const { navigation } = this.props;
         var stateCopy = {...this.state}
         var workout = {
+            id: stateCopy.id,
             title: stateCopy.title,
             day: stateCopy.day,
             exercises: stateCopy.exercises
@@ -68,21 +68,28 @@ export default class Workout extends React.Component {
             navigation.goBack()
         }
     }
+    saveExercise=(exercise,index)=>{
+        var newL = this.state.exercises
+        newL[index] = exercise
+        this.setState({exercise: newL})
+    }
+    editExercise=(element,index)=>{
+        const { navigate } = this.props.navigation;
+        navigate('Exercise',{object: element, index1: index, saveExercise: this.saveExercise})
+    }
     addRow=()=>{
         var list = [...this.state.exercises]
         list.push({name:'',series:[]})
         this.setState({exercises: list})
     }
-    deleteExercise=(index)=>{
-        console.log(index);
-        
+    deleteExercise=(index)=>{  
         Alert.alert(
             'Confirmation',
             'Delete this item ?',
             [
               {text: 'Cancel', onPress: () => console.log('Cancel Pressed'), style: 'cancel'},
               {text: 'OK', onPress: () => {
-                var list = [...this.state.exercises]
+                var list = this.state.exercises
                 list.splice(index,1)
                 this.setState({exercises: list})
               }},
@@ -145,10 +152,14 @@ export default class Workout extends React.Component {
                     </View>
                     {this.state.exercises.map((element, index)=>{
                         return(
-                            <View style = {[{borderBottomWidth: 0.7},styles.row,
-                                {flex: 1},{alignSelf: 'center'}]} key ={index}>
-                                {textInputList(element.name, index, 'name')}         
-                                {textInputList(element.series.toString(), index, 'series')}
+                            <View style = {[styles.containerBox,styles.row,{padding: 0},{margin: 3},{flex: 1}]} key ={index}>
+                                {/* {textInputList(element.name, index, 'name')}         
+                                {textInputList(element.series.toString(), index, 'series')} */}
+                                <TouchableOpacity  onPress={e =>this.editExercise(element, index)} style = {{flex : 1}}>
+                                    <View style={[styles.dateRow, styles.row, {padding: 7}]}>
+                                        <Text style={{fontSize: 18}}>{element.name?element.name:"New Exercise"} ::  {element.series.toString()}</Text>
+                                    </View>
+                                </TouchableOpacity>
                                 <View style={[{ alignSelf: 'center' }]}>
                                     <TouchableOpacity  onPress={() =>this.deleteExercise(index)}>
                                         <View style={{padding: 1}}>

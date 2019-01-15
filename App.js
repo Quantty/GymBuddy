@@ -7,6 +7,7 @@ import Workout from './components/Workout';
 import Historic from './components/Historic';
 import Login from './components/Login';
 import Realm from 'realm';
+import Exercise from './components/Exercise';
 
 const ProfileStack = createStackNavigator({
   Main: { screen: Profile },
@@ -24,7 +25,8 @@ const NutritionStack = createStackNavigator({
 
 const FitnessStack = createStackNavigator({
   Main: { screen: Fitness },
-  Workout: { screen: Workout }
+  Workout: { screen: Workout },
+  Exercise: {screen: Exercise}
 }, { 
   initialRouteName: 'Main'
 });

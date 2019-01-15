@@ -44,6 +44,9 @@ export const styles = StyleSheet.create({
     borderColor: 'grey',
     borderBottomWidth: 1
   },
+  height100:{
+    height: 100
+  },
   height: {
     height: 40,
     padding: 5
