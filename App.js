@@ -7,6 +7,7 @@ import Workout from './components/Workout';
 import Historic from './components/Historic';
 import Login from './components/Login';
 import Realm from 'realm';
+import Exercise from './components/Exercise';
 
 const ProfileStack = createStackNavigator({
   Main: { screen: Profile },
@@ -24,7 +25,8 @@ const NutritionStack = createStackNavigator({
 
 const FitnessStack = createStackNavigator({
   Main: { screen: Fitness },
-  Workout: { screen: Workout }
+  Workout: { screen: Workout },
+  Exercise: {screen: Exercise}
 }, { 
   initialRouteName: 'Main'
 });
@@ -54,7 +56,25 @@ const TabNavigator = createBottomTabNavigator({
   Nutrition: { screen: NutritionStack },
   Fitness: { screen: FitnessStack }
 }, {
-  initialRouteName: 'Profile'
+  initialRouteName: 'Profile',
+  tabBarOptions: {
+    activeTintColor: '#e91e63',
+    labelStyle: {
+      fontSize: 22,
+      alignSelf: 'center'
+    },
+    allowFontScaling: true,
+    style: {
+      height: 40
+    },
+    tabStyle: {
+      borderRadius: 6,
+      backgroundColor: '#dcdcdc',
+      borderWidth: 1,
+      margin : 3,
+      justifyContent: 'center'
+    }
+  }
 });
 
 const SwitchNavigator = createSwitchNavigator({

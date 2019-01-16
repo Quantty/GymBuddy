@@ -1,75 +1,114 @@
 import React from 'react';
 import { Text, View, ScrollView, TouchableOpacity ,Picker,Button,Image, Alert} from 'react-native';
 import { styles } from '../styles/styles';
-import { profileSchema, foodSchema } from '../database/schemas';
+import { workoutSchema, exerciseSchema } from '../database/schemas';
 import Realm from 'realm';
 import images from '../images';
 import Workout from './Workout';
 
 
 export default class Fitness extends React.Component {
-    static navigationOptions = {
-        header: null
-      }
+    static navigationOptions = ({ navigation }) => {
+        return {
+          title: 'Fitness',
+          headerTitleStyle: {
+            fontWeight: 'bold',
+          },
+          headerStyle: {
+            backgroundColor: '#dcdcdc'
+          },
+        }
+    }
     constructor(props) {
         super(props);
         this.state = {
-            workoutList: [
-                {
-                    title: 'Chest Day',
-                    day:'Monday',
-                    exercises: [
-                        {
-                            name:'Bench Press',
-                            series:[12,10,8,6]
-                        },
-                        {
-                            name:'Machine Decline Press',
-                            series:[10,9,7]
-                        },
-                        {
-                            name: "Incline Bench Cable Fly",
-                            series:[10,9,8]
-                        }],
-                    showEx: false
-                },
-                {
-                    title: 'Shoulders',
-                    day: 'Tuesday',
-                    exercises: [
-                        {
-                            name:'Cable Reverse Flye',
-                            series:[12,10,8]
-                        },
-                        {
-                            name:'Push Press',
-                            series:[10,9,8]
-                        }],
-                    showEx: false
-                }
-            ]
+            countId : null,
+            realm: null,
+            workoutList: []
         }
     }
+
+    componentDidMount(){
+        //  this.resetDb()
+        //  this.writeToDb()
+        this.readAll() 
+    }
+    resetDb=()=>{
+        Realm.deleteFile({schema:[exerciseSchema, workoutSchema]})
+    }
+    readAll=()=>{
+        Realm.open({
+            schema: [exerciseSchema, workoutSchema]
+          }).then(realm => {
+                console.log("reading the list");
+                var list = realm.objects('Workout')
+                this.setState({workoutList: list,
+                realm : realm, countId: list.length})
+          });
+    }
+    makeId=()=>{
+        var nr = this.state.countId
+        nr = nr + 1
+        this.setState({countId: nr})
+        return nr
+    }
+    writeToDb=()=>{
+        Realm.open({
+            schema: [workoutSchema, exerciseSchema]
+          }).then(realm => {
+              console.log("open & write");
+              
+            realm.write(() => {
+              realm.create('Workout', {
+                    id: this.makeId(),
+                    title: 'Chest Day',
+                    day:'Monday',
+                    showEx: false,
+                    exercises: [{name:'Bench Press', series:[12,10,8,6]},
+                                {name:'Machine Decline Press', series:[10,9,7]},
+                                {name: "Incline Bench Cable Fly", series:[10,9,8]}]
+                });
+                realm.create('Workout', {
+                    id: this.makeId(),
+                    title: 'Shoulders',
+                    day: 'Tuesday',
+                    showEx: false,
+                    exercises: [{name:'Cable Reverse Flye', series:[12,10,8]},
+                                {name:'Push Press', series:[10,9,8]}]})
+            });
+            realm.close();
+          });
+    }
+
     addWorkoutItem=(item)=>{
-        var workouts = [...this.state.workoutList]
-        workouts.push(item)
-        this.setState({workoutList: workouts})
+        var myRealm = this.state.realm
+        myRealm.write(()=>{
+            myRealm.create('Workout',{id: this.makeId(), day: item.day, title: item.title, 
+                                    showEx: false, exercises: item.exercises}, true)
+        })
+        this.setState({workoutList : myRealm.objects('Workout')})
     }
     editWorkoutItem=(item, index)=>{
-        var workouts = [...this.state.workoutList]
-        workouts[index] = item 
-        this.setState({workoutList: workouts})  
+        var myRealm = this.state.realm
+        myRealm.write(()=>{
+            myRealm.create('Workout',{id: item.id, day: item.day, title: item.title, 
+                                    showEx: false, exercises: item.exercises}, true)
+        })
+        this.setState({workoutList : myRealm.objects('Workout')})
     }
-    deleteWorkout=(index)=>{
+    deleteWorkout=(item)=>{
         Alert.alert(
             'Confirmation',
             'Delete this item ?',
             [
               {text: 'Cancel', onPress: () => console.log('Cancel Pressed'), style: 'cancel'},
               {text: 'OK', onPress: () => {
-                var workouts = [...this.state.workoutList]
-                workouts.splice(index,1)
-                this.setState({workoutList: workouts})  
+                var myRealm = this.state.realm
+                myRealm.write(()=>{
+                    let obj = myRealm.create('Workout',{id: item.id}, true)
+                    myRealm.delete(obj)
+                })
+                this.setState({workoutList : myRealm.objects('Workout')})
               }},
             ],
             { cancelable: true }
@@ -93,13 +132,11 @@ export default class Fitness extends React.Component {
         this.setState({workoutList : list})
     }
     setDay=(item, day)=>{
-        var list = [...this.state.workoutList]
-        list.forEach(elem =>{
-            if(elem === item){
-                elem.day = day
-            }
+        var myRealm = this.state.realm
+        myRealm.write(()=>{
+            myRealm.create('Workout',{id: item.id, day: day}, true)
         })
-        this.setState({workoutList : list})
+        this.setState({workoutList : myRealm.objects('Workout')})
     }
     printElement = (item,index)=>{
         return(
@@ -146,7 +183,7 @@ export default class Fitness extends React.Component {
                 }
                 <View style = {styles.row}>
                  <View style={[{ width: "15%", alignSelf: 'flex-start',flex: 1}]}>
-                    <TouchableOpacity  onPress={e =>this.deleteWorkout(index)}>
+                    <TouchableOpacity  onPress={e =>this.deleteWorkout(item)}>
                         <View style={{padding: 1}}>
                             <Image style={{width: 25, height: 25}} source = {images.delete} />
                         </View>
@@ -173,14 +210,14 @@ export default class Fitness extends React.Component {
                             title="Add New"
                             color="#841584"
                         />
-        const header = <View style={[styles.row, styles.dateRow, {padding: 10}]}>
-                            <Text style={{fontSize: 22}}>Fitness</Text>
+        const header = <View style={[styles.row, styles.dateRow, {padding: 10,fontWeight: 'bold'}]}>
+                            <Text style={{fontSize: 22, fontWeight: 'bold'}}>Fitness</Text>
                         </View>
 
-        var list = [...this.state.workoutList]
+        var list = this.state.workoutList
+        console.log(list);
+        
         return (<View style={{flex:1}}>
-                    {header}
-                    
                     <ScrollView style={styles.marginsLeftRight}>
                         {list.map((item, index) =>
                                 this.printElement(item, index)

@@ -13,7 +13,6 @@ export const profileSchema = {
   }
 }
 
-
 export const foodSchema = {
   name: 'food',
   primaryKey: 'id',
@@ -24,6 +23,26 @@ export const foodSchema = {
     carbs: 'double',
     fat: 'double',
     calories: 'int'
+  }
+}
+
+export const exerciseSchema = {
+  name: 'Exercise',
+  properties: {
+    details: {type: 'string', default: ''},
+    name: { type: 'string', default: "" },
+    series: { type: 'int[]', default: [] },
+  }
+}
+
+export const workoutSchema = {
+  name: 'Workout',
+  primaryKey: 'id',
+  properties: {
+    id: {type: 'int', default: 0},
+    title: { type: 'string', default: "" },
+    day: { type: 'string', default: "Monday" },
+    exercises: {type: 'list', objectType: 'Exercise'}
   }
 }
 

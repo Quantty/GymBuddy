@@ -4,5 +4,6 @@ export default images = {
   femaleGrey: require('./assets/female_2.png'),
   female: require('./assets/female_1.png'),
   down: require('./assets/down.png'),
-  delete: require('./assets/delete.png')
+  delete: require('./assets/delete.png'),
+  benchPress: require('./assets/benchPress.gif')
 }
