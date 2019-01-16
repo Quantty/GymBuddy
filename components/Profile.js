@@ -48,7 +48,20 @@ export default class Profile extends React.Component {
 
   async componentDidMount() {
     const token = await SInfo.getItem('accessToken', {});
-    console.log(token);
+    fetch('https://gymmybymmy.herokuapp.com/data', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        authorization: `Bearer ${token}`
+      },
+      body: JSON.stringify({data: {pula: 'fmm'}})
+    })
+    .then(res => {
+      console.log(res);
+    })
+    .catch(err => {
+      console.log(err);
+    });
     const credentials = Realm.Sync.Credentials.jwt(token);
     let user = await Realm.Sync.User.login(config.REALM_CLOUD, credentials);
     let userConfig = user.createConfiguration({
