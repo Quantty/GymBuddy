@@ -56,7 +56,25 @@ const TabNavigator = createBottomTabNavigator({
   Nutrition: { screen: NutritionStack },
   Fitness: { screen: FitnessStack }
 }, {
-  initialRouteName: 'Profile'
+  initialRouteName: 'Profile',
+  tabBarOptions: {
+    activeTintColor: '#e91e63',
+    labelStyle: {
+      fontSize: 22,
+      alignSelf: 'center'
+    },
+    allowFontScaling: true,
+    style: {
+      height: 40
+    },
+    tabStyle: {
+      borderRadius: 6,
+      backgroundColor: '#dcdcdc',
+      borderWidth: 1,
+      margin : 3,
+      justifyContent: 'center'
+    }
+  }
 });
 
 const SwitchNavigator = createSwitchNavigator({

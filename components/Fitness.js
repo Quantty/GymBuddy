@@ -8,9 +8,17 @@ import Workout from './Workout';
 
 
 export default class Fitness extends React.Component {
-    static navigationOptions = {
-        header: null
-      }
+    static navigationOptions = ({ navigation }) => {
+        return {
+          title: 'Fitness',
+          headerTitleStyle: {
+            fontWeight: 'bold',
+          },
+          headerStyle: {
+            backgroundColor: '#dcdcdc'
+          },
+        }
+    }
     constructor(props) {
         super(props);
         this.state = {
@@ -202,16 +210,14 @@ export default class Fitness extends React.Component {
                             title="Add New"
                             color="#841584"
                         />
-        const header = <View style={[styles.row, styles.dateRow, {padding: 10}]}>
-                            <Text style={{fontSize: 22}}>Fitness</Text>
+        const header = <View style={[styles.row, styles.dateRow, {padding: 10,fontWeight: 'bold'}]}>
+                            <Text style={{fontSize: 22, fontWeight: 'bold'}}>Fitness</Text>
                         </View>
 
         var list = this.state.workoutList
         console.log(list);
         
         return (<View style={{flex:1}}>
-                    {header}
-                    
                     <ScrollView style={styles.marginsLeftRight}>
                         {list.map((item, index) =>
                                 this.printElement(item, index)
